@@ -5,7 +5,7 @@ export default {
 
     async getUserLogged() {
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDAyNzgyNDcsImV4cCI6MTY0MDM2NDY0NywiZGF0YSI6eyJ1c2VyX2lkIjoiMyJ9fQ.RwQBfWYS3ulGi0YIKV9FuVtZkeLIIQ-hcROpkG8iAs8";
+        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDEyOTE5MzksImV4cCI6MTY0MTM3ODMzOSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0._5pUv_4gB5SNjrBbnh77oDtGrx5d0A2oGi1ScuL81QU";
 
         if(!localStorage.token) {
 

@@ -1,7 +1,8 @@
 <template>
 <div class="container-fluid">
 
-    <input type="color" v-model="selcolor" @change="devolverColor()">
+    <input type="color" :value="color" @input="devolverColor">
+    <!-- @change="devolverColor" -->
 
 </div>
 </template>
@@ -16,13 +17,11 @@ export default {
     },
     data() {
         return {
-            defaultcolor: '#FFFFFF',
-            selcolor: this.color,      
         }
     },
     methods: {
-        devolverColor() {
-            this.destino(this.compo, this.selcolor);
+        devolverColor(e) {
+            this.destino(this.compo, e.target.value);
         }
     },
 

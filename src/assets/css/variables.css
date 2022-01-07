@@ -2,6 +2,7 @@
     /* Colores generales */
     --true-color-empresa: darkblue;
     --true-background-color: darkblue;
+    --true-letras-color: black;
     --true-header-color: #e3f2fd;
     /* botones */
     --true-button-color: darkblue;
@@ -10,4 +11,6 @@
     --true-border-button-color: dodgerblue;
     --true-button-border-disabled: rgb(230, 230, 230);
     --true-button-hover-disabled: silver;
+    /* Desplegables */
+    --true-select-background-color: dodgerblue;
 }

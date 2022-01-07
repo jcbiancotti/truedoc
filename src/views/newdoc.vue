@@ -1,7 +1,7 @@
 <template>
 <div class="container-fluid">
 
-    <telon :hidden="telon"/>
+    <telon :hidden="hiddentelon"/>
 
     <!-- TABS -->
     <ul class="nav nav-pills" role="tablist">
@@ -19,10 +19,11 @@
     <div class="tab-content">
 
         <!-- METADATOS -->
-        <div id="datos-docu" class="container tab-pane fade show active"><br>
+        <div id="datos-docu" class="container-fluid tab-pane fade show active"><br>
 
-            <div class="card text-center">
-                
+            <div class="row justify-content-center">
+            <div class="card" style="width: 90%;">
+
                 <div class="card-header">
                     <h3>Metadatos</h3>
                 </div>
@@ -35,7 +36,7 @@
                                 <label>(*) T&iacute;tulo:</label>
                             </div>
                             <div class="w-50 text-left pl-4">
-                                <input type="text" class="form-control" v-model="modelo.oMetadatos.titulo">
+                                <input type="text" class="form-control" v-model="modelo.oMetadatos.titulo" placeholder="Nombre para identificar el documento">
                             </div>
                         </div> 
 
@@ -44,7 +45,7 @@
                                 <label>(*) Versi&oacute;n:</label>
                             </div>
                             <div class="w-50 text-left pl-4">
-                                <input type="text" class="form-control" v-model="modelo.oMetadatos.version">
+                                <input type="text" class="form-control" v-model="modelo.oMetadatos.version" placeholder="Versión del documento">
                             </div>
                         </div>
 
@@ -53,7 +54,7 @@
                                 <label>(*) Orientaci&oacute;n:</label>
                             </div>
                             <div class="w-50 text-left pl-4">
-                                <select class="form-control" v-model="modelo.oMetadatos.orientacion">
+                                <select class="form-control" v-model="this.modelo.oMetadatos.orientacion" @change="changeOrientacion()">
                                     <option value="V">Vertical</option>
                                     <option Value="H">Horizontal</option>
                                 </select>
@@ -65,13 +66,15 @@
                 </div>
 
             </div>
+            </div>
 
         </div>
 
         <!-- FORMATO -->
-        <div id="datos-formato" class="container tab-pane fade"><br>
+        <div id="datos-formato" class="container-fluid tab-pane fade"><br>
 
-            <div class="card text-center mb-12">
+            <div class="row justify-content-center">
+            <div class="card" style="width: 90%;">
                 
                 <div class="card-header">
                     <h3>Formato del documento</h3>
@@ -81,25 +84,32 @@
                     <table class="text-left">
                         <tr>
                             <td>
-                                <div class="fullpage" :style="`${'width:' + cancho + 'px;height:' + calto + 'px'}`">
+                                <div class="fullpage" :style="`${'width:' + ancho + 'px;height:' + alto + 'px'}`">
 
-                                    <div ref="encabezado" id="encabezado" class="encabezado" :style="`${'height:' + modelo.oHeader.height + 'px;max-height:' + maxHeader + 'px;background-color:' + modelo.oHeader.backcolor}`" v-resize="onResize">
-                                        <p>Encabezado</p>
+                                    <div ref="encabezado" id="encabezado" class="encabezado" :style="`${'height:' + hHeader + 'px;background-color:' + modelo.oHeader.backcolor}`">
+                                       
+                                        <img v-if="logopreview && modelo.oHeader.logo.SiNo" 
+                                            :src="logopreview" 
+                                            :height="`${logoHeight}`" 
+                                            :width="`${logoWidth}`" 
+                                            :style="`${'position:relative;left:' + (modelo.oHeader.logo.posX) + 'px;top:' + (modelo.oHeader.logo.posY) + 'px'}`"
+                                        />                                        
+                                         <p>Encabezado</p>
                                     </div>
 
-                                    <div ref="subencabezado" id="subencabezado" class="subencabezado" :style="`${'height:' + modelo.oSubHeader.height + 'px;max-height:' + maxSubHeader + 'px;background-color:' + modelo.oSubHeader.backcolor}`" v-resize="onResize">
+                                    <div ref="subencabezado" id="subencabezado" class="subencabezado" :style="`${'height:' + hSubHeader + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
                                         <p>Sub-encabezado</p>
                                     </div>
 
-                                    <div ref="cuerpo" id="cuerpo" class="cuerpo" :style="`${'height:' + modelo.oBody.height + 'px;max-height:' + maxBody + 'px;background-color:' + modelo.oBody.backcolor}`" v-resize="onResize">
+                                    <div ref="cuerpo" id="cuerpo" class="cuerpo" :style="`${'height:' + hBody + 'px;background-color:' + modelo.oBody.backcolor}`">
                                         <p>Cuerpo</p>
                                     </div>
 
-                                    <div ref="subtotales" id="subtotales" class="subtotales" :style="`${'height:' + modelo.oSubTotales.height + 'px;max-height:' + maxSubTotales + 'px;background-color:' + modelo.oSubTotales.backcolor}`" v-resize="onResize">
+                                    <div ref="subtotales" id="subtotales" class="subtotales" :style="`${'height:' + hSubTotales + 'px;background-color:' + modelo.oSubTotales.backcolor}`">
                                         <p>Sub-totales</p>
                                     </div>
 
-                                    <div ref="pie" id="pie" class="pie" :style="`${'height:' + modelo.oPie.height + 'px;max-height:' + maxPie + 'px;background-color:' + modelo.oPie.backcolor}`" v-resize="onResize">
+                                    <div ref="pie" id="pie" class="pie" :style="`${'height:' + hPie + 'px;background-color:' + modelo.oPie.backcolor}`">
                                         <p>Pie del documento</p>
                                     </div>
 
@@ -112,7 +122,7 @@
                                         <label for="altura-header">Altura del encabezado</label><br>
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-header" name="porce-header" style="width:80px" min="0" :max="maxPorceHeader" v-model="porceHeader">%
+                                        <input type="number" id="porce-header" name="porce-header" style="width:80px" min="0" :max="maxPorceHeader" v-model="modelo.oHeader.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oHeader.backcolor" compo="encabezado" :destino="poneColor"/>
@@ -124,7 +134,7 @@
                                         <label for="altura-subheader">Altura del sub-encabezado</label><br>
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-subheader" name="porce-subheader" style="width:80px" min="0" :max="maxPorceSubHeader" v-model="porceSubHeader">%
+                                        <input type="number" id="porce-subheader" name="porce-subheader" style="width:80px" min="0" :max="maxPorceSubHeader" v-model="modelo.oSubHeader.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oSubHeader.backcolor" compo="subencabezado" :destino="poneColor"/>
@@ -136,7 +146,7 @@
                                         <label for="altura-body">Altura del cuerpo</label><br>                                                
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-body" name="porce-body" style="width:80px" min="0" :max="maxPorceBody" v-model="porceBody">%
+                                        <input type="number" id="porce-body" name="porce-body" style="width:80px" min="0" :max="maxPorceBody" v-model="modelo.oBody.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oBody.backcolor" compo="cuerpo" :destino="poneColor"/>
@@ -148,8 +158,7 @@
                                         <label for="altura-subtotales">Altura del sub-total</label><br>
                                     </td>
                                     <td>
-                                        <!-- <input type="number" id="altura-subtotales" name="altura-subtotales" style="width:80px" min="0" :max="maxSubTotales" step="1.00" v-model="modelo.oSubTotales.height"> -->
-                                        <input type="number" id="porce-subtotales" name="porce-subtotales" style="width:80px" min="0" :max="maxPorceSubTotales" v-model="porceSubTotales">%
+                                        <input type="number" id="porce-subtotales" name="porce-subtotales" style="width:80px" min="0" :max="maxPorceSubTotales" v-model="modelo.oSubTotales.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oSubTotales.backcolor" compo="subtotales" :destino="poneColor"/>
@@ -161,8 +170,7 @@
                                         <label for="altura-pie">Altura del pie</label><br>                                                
                                     </td>
                                     <td>
-                                        <!-- <input type="number" id="altura-pie" name="altura-pie" style="width:80px" min="0" :max="maxPie" v-model="modelo.oPie.height"> -->
-                                        <input type="number" id="porce-pie" name="porce-Pie" style="width:80px" min="0" :max="maxPorcePie" step="1.00" v-model="porcePie">%
+                                        <input type="number" id="porce-pie" name="porce-Pie" style="width:80px" min="0" :max="maxPorcePie" step="1.00" v-model="modelo.oPie.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oPie.backcolor" compo="pie" :destino="poneColor"/>
@@ -170,19 +178,6 @@
                                 </tr>  
                                 <tr>
                                     <p class="btn" @click="muestraPDF()">Generar documento de muestra</p>
-                                    <!-- <p class="btn" @click="mensaje()">PRUEBA</p>
-                                    <p>
-                                        <vue-excel-xlsx class="btn"
-                                            :data="datos"
-                                            :columns="columnas"
-                                            :filename="'filename'"
-                                            :sheetname="'sheetname'"
-                                            >
-                                            Download
-                                        </vue-excel-xlsx>
-                                    </p>
-                                    <p class="btn" @click="ponerTelon(true)">Poner Telon</p> -->
-
 
                                 </tr>
                             </td>
@@ -192,42 +187,213 @@
                 </div>
 
             </div>
+            </div>
+
         </div>
 
         <!-- ENCABEZADO -->
-        <div id="datos-encabezado" class="container tab-pane fade"><br>
+        <div id="datos-encabezado" class="container-fluid tab-pane fade"><br>
 
-            <div class="card text-center">
+            <div class="row justify-content-center">
+            <div class="card" style="width: 90%;">
                 
                 <div class="card-header">
                     <h3>Contenido del encabezado</h3>
                 </div>
                 <div class="card-body">
 
-                    <table>
-                        <tr>
-                            <td>
-                                <div class="fullpage-header" :style="`${'height:' + modelo.oHeader.height + 'px;background-color:' + modelo.oHeader.backcolor}`">
+                    <div class="contenido-encabezado">
+                        <div>
+                            <div class="fullpage-header" :style="`${'height:' + hHeader * 2 + 'px;width:' + ancho * 2 + 'px;background-color:' + modelo.oHeader.backcolor}`">
 
+                                <img v-if="logopreview && modelo.oHeader.logo.SiNo" 
+                                    :src="logopreview" 
+                                    :height="`${logoHeight * 2}`" 
+                                    :width="`${logoWidth * 2}`" 
+                                    :style="`${'position:relative;left:' + (modelo.oHeader.logo.posX * 2) + 'px;top:' + (modelo.oHeader.logo.posY * 2) + 'px'}`"
+                                />
 
+                            </div> 
+                        </div>
+                        <div>
+                            <div class="img-preview">
+                                <img v-if="logopreview" :src="logopreview"  width="100" height="100" />
+                                <img v-if="!logopreview" src="@/assets/img/true-logo-vacio.png" width="100" height="100">
+                                <p>{{modelo.oHeader.logo.img}}</p>
+                            </div>                            
+                            <div class="opciones-preview">
 
-                                </div> 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img id="logoimg" src="@/assets/img/true-logo.png" width="100" height="100">
-                            </td>
-                            <td>
-                                <input type="checkbox" id="logo" name="logo" v-model="modelo.oHeader.logo.SiNo">
-                                <label for="logo">Incluir logo en el encabezado</label><br>
-                            </td>                            
-                        </tr>
-                    </table>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label for="file-logo" class="btn" title="Selecciona la imagen para el logotipo">
+                                                Imagen
+                                                <i class="far fa-file-image"></i>
+                                                <input type="file" id="file-logo" accept=".png,.jpg,.bmp" @change="cargalogo" >
+                                            </label>       
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">
+                                            <label class="content-input">
+                                                <check nombre="incluyeLogo" id="modelo.oHeader.logo.SiNo" texto="Incluir en el encabezado" :valor="modelo.oHeader.logo.SiNo" @getData="getData" />
+                                                <i></i>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="logo-alto">Tamaño - Altura</label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="logo-alto" min='0' max='90' step="1.00" v-model="modelo.oHeader.logo.pHeight">
+                                            <label for="logo-alto">% del encabezado</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="logo-ancho">Tamaño - Ancho</label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="logo-ancho" min='0' max='90' step="1.00" v-model="modelo.oHeader.logo.pWidth">
+                                            <label for="logo-ancho">% del ancho del encabezado</label>  
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="logo-y">Posicion Y</label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="logo-y" min="0" :max="`${logoMaxY}`" v-model="modelo.oHeader.logo.posY">
+                                            <label for="logo-y">desde el margen superior</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="logo-x">Posición X </label>
+                                        </td>
+                                        <td>
+                                            <input type="number" id="logo-X" min="0" :max="`${logoMaxX}`" v-model="modelo.oHeader.logo.posX">
+                                            <label for="logo-x"> desde el margen izquierdo</label>  
+                                        </td>
+                                    </tr>                                    
+                                </table>
 
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- TEXTOS DEL ENCABEZADO -->
+                    <form action @submit.prevent="cero">
+
+                        <div class="text-left">
+                            <h3>Textos</h3>
+                        </div>
+                        <table id="texto-tmp" class="texto-tmp">
+                            <tr>
+                                <td>
+                                    <span>Fuente:<truefuentes id="txtFuente" :valor="txtFuente" @getData="getData"/></span>
+                                </td>                                  
+                                <td>
+                                    {{txtEstilo}} {{cssEstilo}}
+                                    <label>
+                                        <check id="txtEstilo" texto="Negrita" :valor="txtEstilo" @getData="getData" />
+                                        <i></i>
+                                    </label>                                     
+                                </td>
+                                <td>
+                                    <label>
+                                        <check id="txtItalica" texto="It&aacute;lica" :valor="txtItalica" @getData="getData" />
+                                        <i></i>
+                                    </label>                                    
+                                </td>
+                                <td>
+                                    <label>
+                                        <check id="txtSubrayado" texto="Subrayado" :valor="txtSubrayado" @getData="getData" />
+                                        <i></i>
+                                    </label>
+                                </td>
+                                <td>
+                                    <span>Color del texto:<truecolor :color="txtColor" compo="txtColorEncabezado" :destino="poneColor"/></span>
+                                </td>
+                                <td>
+                                    <label for="tamanio">Tama&ntilde;o</label>
+                                    <input type="number" id="tamanio" min="1" :max="`${hHeader}`" v-model="txtTamanio">
+                                </td>                                
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <input type="text" class="form-control" id="txtTexto"
+                                        :class="{conerror : hayerror == 1, sinerror : hayerror == 0}"
+                                        v-model="txtTexto"
+                                        :style="`${'height:auto;font-family:' + txtFuente + ';font-weight:' + cssEstilo + ';font-style: ' + cssItalica + ';text-decoration:' + cssSubrayado + ';font-size:' + txtTamanio + 'pt;color:' + txtColor}`" 
+                                        placeholder="Escribe aquí el texto que deseas incluir"
+                                    >
+                                </td>
+                                <td>
+                                    <label for="txtPos-y">Posici&oacute;n Y</label>
+                                    <input type="number" id="txtPos-y" min="0" :max="`${hHeader - txtTamanio}`" v-model="txtPosY">
+                                </td>
+                                <td>
+                                    <label for="txtPos-x">Posici&oacute;n X</label>
+                                    <input type="number" id="txtPos-x" min="0" :max="`${ancho - 10}`" v-model="txtPosX">
+                                </td>
+                                <td>
+                                    <button class="btn float-center" @click="agregarTexto(modelo.oHeader)">Guardar texto
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn float-center" @click="resetTexto()">Descartar
+                                        <i class="fas fa-undo-alt"></i>
+                                    </button>                                    
+                                </td>                            
+                            </tr>
+                        </table>
+
+                        <div class="table-responsive">
+                        <table id="textos-encabezado" class="table table-hover">                            
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Visible</th>
+                                    <th scope="col">Texto</th>
+                                    <th scope="col">Acciones</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr v-for="txt of modelo.oHeader.textos" :key="txt.id">
+                                    <td scope="row">
+                                        {{txt.id}}
+                                        <label>
+                                            <check id="txtMostrar" texto="" :valor="txt.mostrar" @getData="getData" />
+                                            <i></i>
+                                        </label>                                     
+                                    </td>
+                                    <td scope="row">
+                                        <span
+                                            :style="`${'height:auto;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + txt.tamanio + 'pt;color:' + txt.color}`" 
+                                        >
+                                        {{txt.texto}}</span>
+                                    </td>
+                                    <td scope="row">
+                                        <a @click="borrarTexto(modelo.oHeader, txt.id)"> <i class="far fa-trash-alt fa-2x" style="color:silver" title="Eliminar este texto"></i> </a>
+                                    </td>
+                                    <td scope="row">
+                                        <a @click="editarTexto(modelo.oHeader, txt.id)"> <i class="fa fa-edit fa-2x" style="color:silver" title="Editar este texto"></i> </a>
+                                    </td>                                
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+                        </div>
+
+                    </form>
 
                 </div>
 
+            </div>
             </div>
 
         </div>
@@ -307,25 +473,47 @@
 
 <script>
 
+import global from '@/utils/global'
 import funciones from '@/utils/funciones'
 import truecolor from '@/components/visuales/trueColor'
 import resize from 'vue-resize-directive'
 import telon from '@/components/visuales/telon'
+import check from '@/components/visuales/check'
+import truefuentes from '@/components/visuales/truefuentes'
+
 
 export default {
     name: 'NewDoc',
     components:{
         truecolor,
-        telon
+        telon,
+        check,
+        truefuentes,
     },
     directives:{
         resize
     },
     data() {
+
         return {
-            telon: true,
+            hayerror: 0,
+            hiddentelon: true,
             ancho: 595,
             alto: 842,
+            docOrientacion: 'V',
+            logopreview: null,
+            txtID: funciones.generarUUID2(),
+            txtEstaba: false,
+            txtMostrar: true,
+            txtTexto: '',
+            txtEstilo: false,
+            txtItalica: false,
+            txtSubrayado: false,
+            txtFuente: 'Open Sans',
+            txtTamanio: 18,
+            txtColor: '#000000',
+            txtPosY: 10,
+            txtPosX: 10,
             modelo: {
                 oMetadatos: {
                     titulo: '',
@@ -334,80 +522,48 @@ export default {
                 },
                 oHeader: {
                     backcolor: "#FFFFFF",
-                    height: 200,
-                    hPorce: (200/842*100),
+                    height: (842*20/100),
+                    hPorce: 20,
                     logo: {
                         SiNo: false,
                         posY: 10,
                         posX: 10,
                         height: 100,
                         width: 100,
-                        img: ''
+                        img: '',
+                        pHeight: 33,
+                        pWidth: 10,
                     },
+                    textos: [
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FF88AA', estilo: true, italica: true, subrayado: false, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'none', posY: 10, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FF8888', estilo: false, italica: true, subrayado: false, cssestilo: 'normal', cssitalica: 'italic', csssubrayado: 'none', posY: 10, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: false,texto:'Este es el texto que se incluirá en el header', fuente: 'Sofia', tamanio: 14, color: '#0000FF', estilo: true, italica: true, subrayado: true, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'underline', posY: 10, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true,texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FFCC88', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 10, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true,texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FF8888', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 10, posX: 10},
+
+                    ],
                 },
                 oSubHeader: {
                     backcolor: "#FFFFFF",
-                    height: 30,  
-                    hPorce: (30/842*100),              
+                    height: (842*5/100),  
+                    hPorce: 5,              
                 },
                 oBody: {
                     backcolor: "#FFFFFF",
-                    height: 482,
-                    hPorce: (842/842*100),                
+                    height: (842*55/100),
+                    hPorce: 55,                
                 },
                 oSubTotales: {
                     backcolor: "#FFFFFF",
-                    height: 30, 
-                    hPorce: (30/842*100),               
+                    height: (842*5/100), 
+                    hPorce: 5,               
                 },
                 oPie: {
                     backcolor: "#FFFFFF",
-                    height: 100,
-                    hPorce: (100/842*100),                
+                    height: (842*15/100),
+                    hPorce: 15,                
                 }
             },
-            ro1: null,
-            ro2: null,
-            ro3: null,
-            ro4: null,
-            ro5: null,
-            columnas: [
-                {
-                    label: "Product",
-                    field: "product",
-                },
-                {
-                    label: "Price",
-                    field: "price",
-                    dataFormat: this.priceFormat
-                },
-                {
-                    label: "Quantity",
-                    field: "quantity",
-                },
-            ],
-            datos: [
-                {
-                    product: "Beverage",
-                    price: 10,
-                    quantity: 2
-                },
-                {
-                    product: "Snack",
-                    price: 12,
-                    quantity: 6
-                },
-                {
-                    product: "Beverage",
-                    price: 10,
-                    quantity: 5
-                },
-                {
-                    product: "Snack",
-                    price: 12,
-                    quantity: 3
-                }
-            ],
 
 
 
@@ -417,31 +573,16 @@ export default {
         cero(e) {
             e.preventDefault();
         },
-        onResize(e) {
-
-            let componente = e[0].target.id;
-            let valor = e[0].target.style.height.replace("px", "");
-
-            if(componente == 'encabezado')
-                this.modelo.oHeader.height = valor;
-
-            if(componente == 'subencabezado')
-                this.modelo.oSubHeader.height = valor;
-            
-            if(componente == 'cuerpo')
-                this.modelo.oBody.height = valor;   
-                
-            if(componente == 'subtotales')
-                this.modelo.oSubTotales.height = valor;         
-                
-            if(componente == 'pie')
-                this.modelo.oPie.height = valor;                 
-
-        },
         poneColor(componente, valor) {
+
+           if(global.DEBUG)
+                console.log('ponerColor Valor recibido del componente', componente, valor);
 
             if(componente == 'encabezado')
                 this.modelo.oHeader.backcolor = valor;
+
+            if(componente == 'txtColorEncabezado')
+                this.txtColor = valor;                
                 
             if(componente == 'subencabezado')
                 this.modelo.oSubHeader.backcolor = valor;
@@ -456,43 +597,59 @@ export default {
                 this.modelo.oPie.backcolor = valor; 
 
         },
-        mensaje() {
+        getData(quien, valor) {
 
-            this.ponerTelon(true);
+            if(global.DEBUG)
+                console.log('getData Valor recibido del componente', quien, valor);
 
-            funciones.popAlert('success', 'Genero la excel?', false, false, 8000, "Sí, hazlo")
-            .then((result) => {
+            if(quien == 'modelo.oHeader.logo.SiNo')
+                this.modelo.oHeader.logo.SiNo = valor;
 
-                this.ponerTelon(false);
+            if(quien == 'txtFuente')
+                this.txtFuente = valor;
 
-                if(result == true) {
+            if(quien == 'txtEstilo')
+                this.txtEstilo = valor;  
+                        
+            if(quien == 'txtItalica') 
+                this.txtItalica = valor;  
 
+            if(quien == 'txtSubrayado') 
+                this.txtSubrayado = valor;  
 
-                    console.log("Ok")
-
-
+ 
+        },
+        cargalogo(e) {
+            if(e.target.files[0]) {
+                const image = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(image);
+                reader.onload = e =>{
+                    this.modelo.oHeader.logo.img = image.name;
+                    this.logopreview = e.target.result;
                 }
-
-
-            });
-            
-
-        },
-        priceFormat(value){
-            return value + '€ ';
-        },
-        ponerTelon(accion){
-            this.telon = !accion;
+            }
         },
         muestraPDF() {
 
             try {
 
-                funciones.popAlert('question', 'Deseas obtener un ejemplo del documento?', true, true, 8000, "Sí")
+                funciones.popAlert('question', 'Deseas obtener un ejemplo del documento?', true, true, 8000, "Sí, por favor")
                 .then((result) => {
 
                     if(result==true) {
-                        this.ponerTelon(true);
+
+                        // Ajustar los height de cada seccion
+                        this.modelo.oHeader.height = this.hHeader;
+                        this.modelo.oSubHeader.height = this.hSubHeader;
+                        this.modelo.oBody.height = this.hBody;
+                        this.modelo.oSubTotales.height = this.hSubTotales;
+                        this.modelo.oPie.height = this.hPie;
+
+                        this.modelo.oHeader.logo.height = this.logoHeight;
+                        this.modelo.oHeader.logo.width = this.logoWidth;
+
+                        this.hiddentelon = false;
 
                         funciones.generarPDFmuestra(this.modelo)
                         .then((result) => {
@@ -522,7 +679,7 @@ export default {
                             }
 
                         }).finally(() => {
-                            this.ponerTelon(false);              
+                            this.hiddentelon = true;              
                         })
 
                     }
@@ -534,176 +691,330 @@ export default {
                 console.log(error);
             }
 
-        }        
-        
+        },
+        changeOrientacion(){
+
+            funciones.popAlert('question', "Al cambiar la orientación se restablecerá la altura de las secciones del documento y el tamaño del logo a los valores por defecto. ¿Quieres continuar?", true, true, 0, "Ok")
+            .then((result) => {
+
+                if(result == true) {
+
+                    if(this.modelo.oMetadatos.orientacion == 'V') {
+                        this.alto = 842;
+                        this.ancho = 595;
+                        this.modelo.oHeader.logo.pHeight = 33;
+                        this.modelo.oHeader.logo.pWidth = 10;                        
+
+                    } else {
+                        this.alto = 595;
+                        this.ancho = 842;                
+                        this.modelo.oHeader.logo.pHeight = 50;
+                        this.modelo.oHeader.logo.pWidth = 8;                        
+                    }
+                    this.modelo.oHeader.hPorce = 20;
+                    this.modelo.oSubHeader.hPorce = 5;
+                    this.modelo.oBody.hPorce = 55;
+                    this.modelo.oSubTotales.hPorce = 5;
+                    this.modelo.oPie.hPorce = 15;
+
+                    this.modelo.oHeader.logo.posY = 10;
+                    this.modelo.oHeader.logo.posX = 10;
+
+
+
+                } else {
+
+                    if(this.modelo.oMetadatos.orientacion == 'V') {
+                        this.modelo.oMetadatos.orientacion = 'H'; 
+                    } else {
+                        this.modelo.oMetadatos.orientacion = 'V';    
+                    }   
+
+                }
+
+            });
+
+        },
+        agregarTexto(objeto) {
+            
+            if(this.txtTexto == '') {
+                this.hayerror = 1;
+                return                
+            }
+
+            let existe = objeto['textos'].findIndex(x => x.id === this.txtID);
+
+            if(existe == -1) {
+                // No existe, se crea
+                let idx = funciones.generarUUID2();
+
+                objeto['textos'].push({
+                    id: idx, 
+                    estaba: false, 
+                    mostrar: true, 
+                    texto: this.txtTexto, 
+                    fuente: this.txtFuente,
+                    tamanio: this.txtTamanio,
+                    color: this.txtColor, 
+                    estilo: this.txtEstilo, 
+                    italica: this.txtItalica, 
+                    subrayado: this.txtSubrayado, 
+                    cssestilo: this.cssEstilo, 
+                    cssitalica: this.cssItalica, 
+                    csssubrayado: this.cssSubrayado,                     
+                    posY: this.txtPosY, 
+                    posX: this.txtPosX
+                })
+
+            } else {
+                // Ya existe, se actualiza
+                objeto['textos'][existe].estaba = true; 
+                objeto['textos'][existe].mostrar = true; 
+                objeto['textos'][existe].texto = this.txtTexto; 
+                objeto['textos'][existe].fuente = this.txtFuente;
+                objeto['textos'][existe].tamanio = this.txtTamanio;
+                objeto['textos'][existe].color = this.txtColor; 
+                objeto['textos'][existe].estilo = this.txtEstilo; 
+                objeto['textos'][existe].italica = this.txtItalica; 
+                objeto['textos'][existe].subrayado = this.txtSubrayado;
+                objeto['textos'][existe].cssestilo = this.cssEstilo; 
+                objeto['textos'][existe].cssitalica = this.cssItalica; 
+                objeto['textos'][existe].csssubrayado = this.cssSubrayado;                 
+                objeto['textos'][existe].posY = this.txtPosY; 
+                objeto['textos'][existe].posX = this.txtPosX;
+            }
+
+            this.txtTexto = "";
+            this.txtID = funciones.generarUUID2();
+            this.hayerror = 0;
+            document.getElementById('txtTexto').focus();
+
+        },
+        borrarTexto(objeto, pId) {
+
+            funciones.popAlert('warning', 'Quieres eliminar este texto?', true, true, 8000, "Sí, bórralo!")
+            .then((result) => {
+
+                if(result==true) {
+                    objeto['textos'] = objeto['textos'].filter((tx) => {
+                        return tx.id != pId; 
+                    }) 
+                }
+
+            })
+        },
+        editarTexto(objeto, pId) {
+
+            for(let x=0; x < objeto['textos'].length; x++) {
+                if(objeto['textos'][x].id == pId) {
+                    // Cargar el texto para edición
+                    this.txtID = objeto['textos'][x].id;
+                    this.txtEstaba = false;
+                    this.txtMostrar = true;
+                    this.txtTexto = objeto['textos'][x].texto; 
+                    this.txtFuente = objeto['textos'][x].fuente;
+                    this.txtTamanio = objeto['textos'][x].tamanio;
+                    this.txtColor = objeto['textos'][x].color;
+                    this.txtEstilo = objeto['textos'][x].estilo;
+                    this.txtItalica = objeto['textos'][x].italica;
+                    this.txtSubrayado = objeto['textos'][x].subrayado;
+                    this.txtPosY = objeto['textos'][x].posY;
+                    this.txtPosX = objeto['textos'][x].posX;
+
+                    break;
+                }
+            }
+        },
+        resetTexto() {
+
+            this.txtID = funciones.generarUUID2();
+            this.txtEstaba = false;
+            this.txtMostrar = true;
+            this.txtTexto = ''; 
+            this.txtPosY = 10;
+            this.txtPosX = 10;
+
+            this.hayerror = 0;
+            document.getElementById('txtTexto').focus();
+
+        }
 
 
 
     },
-    mounted() {
-        this.ro1 = new ResizeObserver(this.onResize).observe(this.$refs.encabezado)
-        this.ro2 = new ResizeObserver(this.onResize).observe(this.$refs.subencabezado)
-        this.ro3 = new ResizeObserver(this.onResize).observe(this.$refs.cuerpo)
-        this.ro4 = new ResizeObserver(this.onResize).observe(this.$refs.subtotales)
-        this.ro5 = new ResizeObserver(this.onResize).observe(this.$refs.pie)
-        
-    },
-    beforeUnmount() {
-        // this.ro1.unobserve(this.$refs.encabezado)
-        // this.ro2.unobserve(this.$refs.subencabezado)
-        // this.ro3.unobserve(this.$refs.cuerpo)
-        // this.ro4.unobserve(this.$refs.subtotales)
-        // this.ro5.unobserve(this.$refs.pie)
-    },
+
     computed: {
-        calto:{
+        cssEstilo: {
             get() {
-                let resu = 842;
-                if(this.modelo.oMetadatos.orientacion == 'H')
-                    resu = 595;
-                return resu;
+                if(this.txtEstilo == true) {
+                    return 'bold';
+                } else {
+                    return 'normal';
+                }
             }
         },
-        cancho:{
+        cssItalica: {
             get() {
-                let resu = 595;
-                if(this.modelo.oMetadatos.orientacion == 'H')
-                    resu = 842;
-                return resu;
+                if(this.txtItalica == true) {
+                    return 'italic';
+                } else {
+                    return 'normal';
+                }
+            }
+        },
+        cssSubrayado: {
+            get() {
+                if(this.txtSubrayado == true) {
+                    return 'underline';
+                } else {
+                    return 'none';
+                }
+            }
+        },
+        logoHeight: {
+            get() {
+                // console.log(this.hHeader, this.modelo.oHeader.logo.pHeight, this.modelo.oHeader.height * this.modelo.oHeader.logo.pHeight / 100)
+                return this.hHeader * this.modelo.oHeader.logo.pHeight / 100; 
+            }
+        },
+        logoWidth: {
+            get() {
+                return this.ancho * this.modelo.oHeader.logo.pWidth / 100; 
+            }
+        },
+        logoMaxY: {
+            get() {
+                return this.hHeader - this.logoHeight - 5;
+            }
+        }, 
+        logoMaxX: {
+            get() {
+                return this.ancho - this.logoWidth - 5;
             }
         },        
-        maxHeader:{
-            get() {
-                return (this.calto - this.modelo.oSubHeader.height - this.modelo.oBody.height - this.modelo.oSubTotales.height - this.modelo.oPie.height)
-            }
-        },
-        maxSubHeader:{
-            get() {
-                return (this.calto - this.modelo.oHeader.height - this.modelo.oBody.height - this.modelo.oSubTotales.height - this.modelo.oPie.height)
-            }
-        },        
-        maxBody:{
-            get() {
-                return (this.calto - this.modelo.oHeader.height - this.modelo.oSubHeader.height - this.modelo.oSubTotales.height - this.modelo.oPie.height)
-            }
-        },
-        maxSubTotales:{
-            get() {
-                return (this.calto - this.modelo.oHeader.height - this.modelo.oSubHeader.height - this.modelo.oBody.height - this.modelo.oPie.height)
-            }
-        },        
-        maxPie:{
-            get() {
-                return (this.calto - this.modelo.oHeader.height - this.modelo.oSubHeader.height - this.modelo.oBody.height - this.modelo.oSubTotales.height)
-            }
-        },
-        porceHeader:{
-            get() {
-                return (this.modelo.oHeader.height / this.calto * 100)
-            },
-            set(valor) {
-                this.modelo.oHeader.height = this.calto * valor / 100
-            }            
-        },
         maxPorceHeader:{
             get() {
-                return (this.maxHeader / this.calto * 100)
+                return (100 - this.modelo.oSubHeader.hPorce - this.modelo.oBody.hPorce - this.modelo.oSubTotales.hPorce - this.modelo.oPie.hPorce);
             }           
         },        
-        porceSubHeader:{
-            get() {
-                return (this.modelo.oSubHeader.height / this.calto * 100)
-            },
-            set(valor) {
-                this.modelo.oSubHeader.height = this.calto * valor / 100
-            }  
-        },
         maxPorceSubHeader:{
             get() {
-                return (this.maxSubHeader / this.calto * 100)
+                return (100 - this.modelo.oHeader.hPorce - this.modelo.oBody.hPorce - this.modelo.oSubTotales.hPorce - this.modelo.oPie.hPorce);
             }   
         },       
-        porceBody:{
-            get() {
-                return  (this.modelo.oBody.height / this.calto * 100)
-            },
-            set(valor) {
-                this.modelo.oBody.height = this.calto * valor / 100
-            }  
-        },
         maxPorceBody:{
             get() {
-                return (this.maxBody / this.calto * 100)
+                return (100 - this.modelo.oHeader.hPorce - this.modelo.oSubHeader.hPorce - this.modelo.oSubTotales.hPorce - this.modelo.oPie.hPorce);
             }   
         },         
-        porceSubTotales:{
-            get() {
-                return  (this.modelo.oSubTotales.height / this.calto * 100)
-            },
-            set(valor) {
-                this.modelo.oSubTotales.height = this.calto * valor / 100
-            }  
-        },    
         maxPorceSubTotales:{
             get() {
-                return (this.maxSubTotales / this.calto * 100)
+                return (100 - this.modelo.oHeader.hPorce - this.modelo.oSubHeader.hPorce - this.modelo.oBody.hPorce - this.modelo.oPie.hPorce);
             }   
         },                
-        porcePie:{
-            get() {
-                return  (this.modelo.oPie.height / this.calto * 100)
-            },
-            set(valor) {
-                this.modelo.oPie.height = this.calto * valor / 100
-            }  
-        },        
         maxPorcePie:{
             get() {
-                return (this.maxPie / this.calto * 100)
+                return (100 - this.modelo.oHeader.hPorce - this.modelo.oSubHeader.hPorce - this.modelo.oBody.hPorce - this.modelo.oSubTotales.hPorce);
             }   
-        },           
-    }
+        },     
+        hHeader:{
+            get() {
+                return (this.alto * this.modelo.oHeader.hPorce / 100);
+            }           
+        },        
+        hSubHeader:{
+            get() {
+                return (this.alto * this.modelo.oSubHeader.hPorce / 100);
+            }   
+        },       
+        hBody:{
+            get() {
+                return (this.alto * this.modelo.oBody.hPorce / 100);
+            }   
+        },         
+        hSubTotales:{
+            get() {
+                return (this.alto * this.modelo.oSubTotales.hPorce / 100);
+            }   
+        },                
+        hPie:{
+            get() {
+                return (this.alto * this.modelo.oPie.hPorce / 100);
+            }   
+        },               
+    },
+
 
 }
 </script>
 
 <style scoped>
 
-    .card-body {
-        width: 100%;
-        height: auto;
-        overflow: auto;        
-    }
-    .resizable-content {
-        height: 100%;
-        width: 100%;
-        background-color: aqua;
-    }
-
-    .fullpage {
-        /* height: 3508px; */
-        /* width: 2480px;         */
-        /* height: 842px; */
-        /* width: 595px; */
-        background-color: rgb(213, 213, 213);
-        float:right;
-        border: 1px solid black;
-        text-align: center;
+    /* *************************** CONTENIDO DEL ENCABEZADO ************************ */
+    .contenido-encabezado div { 
+        display: block;
+        overflow-y: auto;
     }
     .fullpage-header {
-        /* height: 3508px;        */
-        width: 1240px;         
-        /* height: 842px; */
-        /* width: 595px; */
+        float:left;
+        border: 1px solid black;
+        text-align: left;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    .img-preview {
+        width: 20%;
+        height: 100%;
+        float: left;
+        position: relative;
+    }
+    .opciones-preview {
+        height: auto;
+        background-color: white;
+        display: block;
+        text-align: start;
+        position: relative;
+    }
+    .opciones-preview input[type="number"] {
+        width: 80px;
+    }
+
+    #texto-tmp {
+        border: 1px solid black;
+        background-color: rgb(210,210,210);
+        width: 100%;
+    }
+    #texto-tmp td {
+        vertical-align: middle;
+        padding: 5px;
+        /* border: 1px solid black; */
+        align-items: center;
+    }
+    .texto-tmp input[type="number"] {
+        width: 80px;
+        margin-left: 5px;
+    }
+
+    #textos-encabezado {
+        border: 1px solid black;
+        width: 100%;
+
+    }
+    /* ********************* FORMATO ***************** */
+    .fullpage {
+        /* height: 3508px; */
+        /* width: 2480px;  */
+        /* height: 842px;  */
+        /* width: 595px;   */
         background-color: rgb(213, 213, 213);
         float:right;
         border: 1px solid black;
-        text-align: center;
+        text-align: left;
+        
     }
+
     .encabezado {
         width: 100%;
-        background-color: rgb(122, 220, 43);
-        resize: vertical;
         border: 2px solid black;
     }
     .encabezado p {
@@ -714,9 +1025,9 @@ export default {
 
     .subencabezado {
         width: 100%;
-        background-color: rgb(216, 36, 75);
-        resize: vertical;
-        border: 2px solid black;        
+        /* resize: vertical; */
+        border: 2px solid black; 
+        /* overflow: auto;        */
     }
     .subencabezado p {
         position: relative;
@@ -726,9 +1037,9 @@ export default {
 
     .cuerpo {
         width: 100%;
-        background-color: rgb(48, 55, 177);
-        resize: vertical;
-        border: 2px solid black;        
+        /* resize: vertical; */
+        border: 2px solid black;  
+        /* overflow: auto;       */
     }
     .cuerpo p {
         position: relative;
@@ -738,9 +1049,9 @@ export default {
 
     .subtotales {
         width: 100%;
-        background-color: rgb(220, 108, 43);
-        resize: vertical;
-        border: 2px solid black;          
+        /* resize: vertical; */
+        border: 2px solid black;   
+        /* overflow: auto;        */
     }
     .subtotales p {
         position: relative;
@@ -750,9 +1061,9 @@ export default {
 
     .pie {
         width: 100%;
-        background-color: rgb(8, 17, 1);
-        resize: vertical;
+        /* resize: vertical; */
         border: 2px solid black;
+        /* overflow: auto; */
     }
     .pie p {
         position: relative;

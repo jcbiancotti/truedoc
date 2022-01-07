@@ -22,7 +22,7 @@ export default {
     },
     async leerLista(pTabla, pClave, pModelo, pOrden) {
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDA4MDAzNzgsImV4cCI6MTY0MDg4Njc3OCwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.KjnD11bknSuMSnvXVh8StqFAqsH66541wyfOz-Ymsk0";
+        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDEyOTE5MzksImV4cCI6MTY0MTM3ODMzOSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0._5pUv_4gB5SNjrBbnh77oDtGrx5d0A2oGi1ScuL81QU";
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 

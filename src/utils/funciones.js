@@ -11,7 +11,7 @@ export default {
         
         let resultado = await Swal.fire({
             position: 'center',
-            icon: icono,  // 'error', 'warning', 'success'
+            icon: icono,  // 'error', 'warning', 'success', 'question'
             title: titulo,
             showConfirmButton: confirmacion,
             showCancelButton: cancelar,
@@ -27,7 +27,7 @@ export default {
 
         console.log(pModelo);
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDA4MDAzNzgsImV4cCI6MTY0MDg4Njc3OCwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.KjnD11bknSuMSnvXVh8StqFAqsH66541wyfOz-Ymsk0";
+        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDEyOTE5MzksImV4cCI6MTY0MTM3ODMzOSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0._5pUv_4gB5SNjrBbnh77oDtGrx5d0A2oGi1ScuL81QU";
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
@@ -43,16 +43,74 @@ export default {
         return resultado.data;          
             
     },
-    convertHex(color) {
-        
-        console.log("funciones recibido", color)
-        color = color.replace('#', '')
-        const r = parseInt(color.substring(0, 2), 16)
-        const g = parseInt(color.substring(2, 4), 16)
-        const b = parseInt(color.substring(4, 6), 16)
-        // return `rgba(${r}, ${g}, ${b}, ${this.opacity / 100})`
-        return `rgba(${r}, ${g}, ${b})`
+    async getListaFuentes() {
+
+        let Google_api_key = "AIzaSyBsPrBMGtuGI9yONrIChthSCvFTMeMWccE";
+
+        let resultado = await axios.get('https://webfonts.googleapis.com/v1/webfonts?sort=ALPHA&key=' + Google_api_key);
+        return resultado
+
+    },
+    generarUUID1() {
+    var d = new Date().getTime();
+        var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    },
+    generarUUID2 (prefix, moreEntropy) {
+        //  discuss at: http://locutus.io/php/uniqid/
+        // original by: Kevin van Zonneveld (http://kvz.io)
+        //  revised by: Kankrelune (http://www.webfaktory.info/)
+        //      note 1: Uses an internal counter (in locutus global) to avoid collision
+        //   example 1: var $id = uniqid()
+        //   example 1: var $result = $id.length === 13
+        //   returns 1: true
+        //   example 2: var $id = uniqid('foo')
+        //   example 2: var $result = $id.length === (13 + 'foo'.length)
+        //   returns 2: true
+        //   example 3: var $id = uniqid('bar', true)
+        //   example 3: var $result = $id.length === (23 + 'bar'.length)
+        //   returns 3: true
+        if (typeof prefix === 'undefined') {
+            prefix = ''
+        }
+        var retId
+        var _formatSeed = function (seed, reqWidth) {
+            seed = parseInt(seed, 10).toString(16) // to hex str
+            if (reqWidth < seed.length) {
+                // so long we split
+                return seed.slice(seed.length - reqWidth)
+            }
+            if (reqWidth > seed.length) {
+                // so short we pad
+                return Array(1 + (reqWidth - seed.length)).join('0') + seed
+            }
+             return seed
+        }
+        var $global = (typeof window !== 'undefined' ? window : global)
+        $global.$locutus = $global.$locutus || {}
+        var $locutus = $global.$locutus
+        $locutus.php = $locutus.php || {}
+        if (!$locutus.php.uniqidSeed) {
+            // init seed with big random int
+            $locutus.php.uniqidSeed = Math.floor(Math.random() * 0x75bcd15)
+        }
+        $locutus.php.uniqidSeed++
+        // start with prefix, add current milliseconds hex string
+        retId = prefix
+        retId += _formatSeed(parseInt(new Date().getTime() / 1000, 10), 8)
+        // add seed hex string
+        retId += _formatSeed($locutus.php.uniqidSeed, 5)
+        if (moreEntropy) {
+            // for more entropy we add a float lower to 10
+            retId += (Math.random() * 10).toFixed(8).toString()
+        }
+        return retId
     }
+
 
 
 }
