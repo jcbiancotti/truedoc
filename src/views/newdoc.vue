@@ -95,6 +95,11 @@
                                             :style="`${'position:relative;left:' + (modelo.oHeader.logo.posX) + 'px;top:' + (modelo.oHeader.logo.posY) + 'px'}`"
                                         />                                        
                                          <p>Encabezado</p>
+                                        <label class="txt-preview" v-for="txt of modelo.oHeader.textos" :key="txt.id"
+                                            :style="`${'top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
+                                        >
+                                            <span v-if="txt.mostrar">{{txt.texto}}</span>
+                                        </label>                                         
                                     </div>
 
                                     <div ref="subencabezado" id="subencabezado" class="subencabezado" :style="`${'height:' + hSubHeader + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
@@ -210,8 +215,14 @@
                                     :src="logopreview" 
                                     :height="`${logoHeight * 2}`" 
                                     :width="`${logoWidth * 2}`" 
-                                    :style="`${'position:relative;left:' + (modelo.oHeader.logo.posX * 2) + 'px;top:' + (modelo.oHeader.logo.posY * 2) + 'px'}`"
+                                    :style="`${'position:absolute;left:' + (modelo.oHeader.logo.posX * 2) + 'px;top:' + (modelo.oHeader.logo.posY * 2) + 'px'}`"
                                 />
+
+                                <label class="txt-preview" v-for="txt of modelo.oHeader.textos" :key="txt.id"
+                                    :style="`${'top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
+                                >
+                                    <span v-if="txt.mostrar">{{txt.texto}}</span>
+                                </label>
 
                             </div> 
                         </div>
@@ -236,9 +247,9 @@
                                     <tr>
                                         <td class="text-center">
                                             <label class="content-input">
-                                                <check nombre="incluyeLogo" id="modelo.oHeader.logo.SiNo" texto="Incluir en el encabezado" :valor="modelo.oHeader.logo.SiNo" @getData="getData" />
+                                                <input type="checkbox" v-model="modelo.oHeader.logo.SiNo">Incluir en el encabezado
                                                 <i></i>
-                                            </label>
+                                            </label>                                                   
                                         </td>
                                     </tr>
                                     <tr>
@@ -296,23 +307,22 @@
                                     <span>Fuente:<truefuentes id="txtFuente" :valor="txtFuente" @getData="getData"/></span>
                                 </td>                                  
                                 <td>
-                                    {{txtEstilo}} {{cssEstilo}}
-                                    <label>
-                                        <check id="txtEstilo" texto="Negrita" :valor="txtEstilo" @getData="getData" />
-                                        <i></i>
-                                    </label>                                     
-                                </td>
-                                <td>
-                                    <label>
-                                        <check id="txtItalica" texto="It&aacute;lica" :valor="txtItalica" @getData="getData" />
+                                    <label class="content-input">
+                                        <input type="checkbox" v-model="txtEstilo">Negrita
                                         <i></i>
                                     </label>                                    
                                 </td>
                                 <td>
-                                    <label>
-                                        <check id="txtSubrayado" texto="Subrayado" :valor="txtSubrayado" @getData="getData" />
+                                    <label class="content-input">
+                                        <input type="checkbox" v-model="txtItalica">It&aacute;lica
                                         <i></i>
-                                    </label>
+                                    </label>                                                                           
+                                </td>
+                                <td>
+                                    <label class="content-input">
+                                        <input type="checkbox" v-model="txtSubrayado">Subrayado
+                                        <i></i>
+                                    </label>       
                                 </td>
                                 <td>
                                     <span>Color del texto:<truecolor :color="txtColor" compo="txtColorEncabezado" :destino="poneColor"/></span>
@@ -364,11 +374,10 @@
 
                                 <tr v-for="txt of modelo.oHeader.textos" :key="txt.id">
                                     <td scope="row">
-                                        {{txt.id}}
-                                        <label>
-                                            <check id="txtMostrar" texto="" :valor="txt.mostrar" @getData="getData" />
+                                        <label class="content-input">
+                                            <input type="checkbox" v-model="txt.mostrar">
                                             <i></i>
-                                        </label>                                     
+                                        </label>                                                                              
                                     </td>
                                     <td scope="row">
                                         <span
@@ -478,7 +487,6 @@ import funciones from '@/utils/funciones'
 import truecolor from '@/components/visuales/trueColor'
 import resize from 'vue-resize-directive'
 import telon from '@/components/visuales/telon'
-import check from '@/components/visuales/check'
 import truefuentes from '@/components/visuales/truefuentes'
 
 
@@ -487,7 +495,6 @@ export default {
     components:{
         truecolor,
         telon,
-        check,
         truefuentes,
     },
     directives:{
@@ -535,12 +542,26 @@ export default {
                         pWidth: 10,
                     },
                     textos: [
-                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FF88AA', estilo: true, italica: true, subrayado: false, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'none', posY: 10, posX: 10},
-                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FF8888', estilo: false, italica: true, subrayado: false, cssestilo: 'normal', cssitalica: 'italic', csssubrayado: 'none', posY: 10, posX: 10},
-                        {id:funciones.generarUUID2(), estaba: true, mostrar: false,texto:'Este es el texto que se incluirá en el header', fuente: 'Sofia', tamanio: 14, color: '#0000FF', estilo: true, italica: true, subrayado: true, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'underline', posY: 10, posX: 10},
-                        {id:funciones.generarUUID2(), estaba: true, mostrar: true,texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FFCC88', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 10, posX: 10},
-                        {id:funciones.generarUUID2(), estaba: true, mostrar: true,texto:'Este es el texto que se incluirá en el header', fuente: 'Anton', tamanio: 18, color: '#FF8888', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 10, posX: 10},
-
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Anton € ñÑ áéíóú', fuente: 'anton', tamanio: 10, color: '#FF88AA', estilo: true, italica: true, subrayado: false, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'none', posY: 10, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Oswald € ñÑ áéíóú', fuente: 'oswald', tamanio: 10, color: '#FF8888', estilo: false, italica: true, subrayado: false, cssestilo: 'normal', cssitalica: 'italic', csssubrayado: 'none', posY: 20, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Audiwide € ñÑ áéíóú', fuente: 'audiowide', tamanio: 10, color: '#0000FF', estilo: true, italica: true, subrayado: true, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'underline', posY: 30, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'bunge Inline € ñÑ áéíóú', fuente: 'Bungee+inline', tamanio: 10, color: '#FFCC88', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 40, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Cabin € ñÑ áéíóú', fuente: 'cabin', tamanio: 10, color: '#FF8888', estilo: false, italica: false, subrayado: true, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'underline', posY: 50, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Cookie € ñÑ áéíóú', fuente: 'cookie', tamanio: 10, color: '#FF88AA', estilo: true, italica: true, subrayado: false, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'none', posY: 60, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Dancing Script € ñÑ áéíóú', fuente: 'dancing+script', tamanio: 10, color: '#FF8888', estilo: false, italica: true, subrayado: false, cssestilo: 'normal', cssitalica: 'italic', csssubrayado: 'none', posY: 70, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Lato € ñÑ áéíóú', fuente: 'lato', tamanio: 10, color: '#0000FF', estilo: true, italica: true, subrayado: true, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'underline', posY: 80, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Montserrat € ñÑ áéíóú', fuente: 'montserrat', tamanio: 10, color: '#FFCC88', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 90, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Open Sans € ñÑ áéíóú', fuente: 'open+sans', tamanio: 10, color: '#FF8888', estilo: false, italica: false, subrayado: true, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'underline', posY: 100, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Patua One € ñÑ áéíóú', fuente: 'Patua+One', tamanio: 10, color: '#FF88AA', estilo: true, italica: true, subrayado: false, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'none', posY: 110, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Pt+Sans € ñÑ áéíóú', fuente: 'Pt Sans', tamanio: 10, color: '#FF8888', estilo: false, italica: true, subrayado: false, cssestilo: 'normal', cssitalica: 'italic', csssubrayado: 'none', posY: 120, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Roboto € ñÑ áéíóú', fuente: 'Roboto', tamanio: 10, color: '#0000FF', estilo: true, italica: true, subrayado: true, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'underline', posY: 130, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Roboto Slab € ñÑ áéíóú', fuente: 'Roboto+slab', tamanio: 10, color: '#FFCC88', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 140, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Sofia € ñÑ áéíóú', fuente: 'Sofia', tamanio: 10, color: '#FF8888', estilo: false, italica: false, subrayado: true, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'underline', posY: 150, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Tangerine € ñÑ áéíóú', fuente: 'Tangerine', tamanio: 10, color: '#FF88AA', estilo: true, italica: true, subrayado: false, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'none', posY: 160, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Titan One € ñÑ áéíóú', fuente: 'Titan+One', tamanio: 10, color: '#FF8888', estilo: false, italica: true, subrayado: false, cssestilo: 'normal', cssitalica: 'italic', csssubrayado: 'none', posY: 170, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Trirong € ñÑ áéíóú', fuente: 'Trirong', tamanio: 10, color: '#0000FF', estilo: true, italica: true, subrayado: true, cssestilo: 'bold', cssitalica: 'italic', csssubrayado: 'underline', posY: 180, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Varela Round € ñÑ áéíóú', fuente: 'Varela+Round', tamanio: 10, color: '#FFCC88', estilo: false, italica: false, subrayado: false, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'none', posY: 190, posX: 10},
+                        {id:funciones.generarUUID2(), estaba: true, mostrar: true, texto:'Vollkorn € ñÑ áéíóú', fuente: 'Vollkorn', tamanio: 10, color: '#FF8888', estilo: false, italica: false, subrayado: true, cssestilo: 'normal', cssitalica: 'normal', csssubrayado: 'underline', posY: 200, posX: 10},
                     ],
                 },
                 oSubHeader: {
@@ -784,7 +805,7 @@ export default {
                 objeto['textos'][existe].posX = this.txtPosX;
             }
 
-            this.txtTexto = "";
+            this.resetTexto();
             this.txtID = funciones.generarUUID2();
             this.hayerror = 0;
             document.getElementById('txtTexto').focus();
@@ -833,6 +854,10 @@ export default {
             this.txtTexto = ''; 
             this.txtPosY = 10;
             this.txtPosX = 10;
+            this.txtEstilo = false;
+            this.txtItalica = false;
+            this.txtSubrayado = false;
+            this.txtTamanio = 18;
 
             this.hayerror = 0;
             document.getElementById('txtTexto').focus();
@@ -873,7 +898,6 @@ export default {
         },
         logoHeight: {
             get() {
-                // console.log(this.hHeader, this.modelo.oHeader.logo.pHeight, this.modelo.oHeader.height * this.modelo.oHeader.logo.pHeight / 100)
                 return this.hHeader * this.modelo.oHeader.logo.pHeight / 100; 
             }
         },
@@ -968,6 +992,14 @@ export default {
         float: left;
         position: relative;
     }
+    .txt-preview {
+        height:auto;
+        position: absolute;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
     .opciones-preview {
         height: auto;
         background-color: white;
@@ -1016,59 +1048,66 @@ export default {
     .encabezado {
         width: 100%;
         border: 2px solid black;
+        position: relative;
     }
     .encabezado p {
-        position: relative;
+        text-align: center;  
+        position:absolute;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .subencabezado {
         width: 100%;
-        /* resize: vertical; */
         border: 2px solid black; 
-        /* overflow: auto;        */
+        position: relative;
     }
     .subencabezado p {
-        position: relative;
+        text-align: center;  
+        position:absolute;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .cuerpo {
         width: 100%;
-        /* resize: vertical; */
         border: 2px solid black;  
-        /* overflow: auto;       */
+        position: relative;
     }
     .cuerpo p {
-        position: relative;
+        text-align: center;  
+        position:absolute;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .subtotales {
         width: 100%;
-        /* resize: vertical; */
         border: 2px solid black;   
-        /* overflow: auto;        */
+        position: relative;
     }
     .subtotales p {
-        position: relative;
+        text-align: center;  
+        position:absolute;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .pie {
         width: 100%;
-        /* resize: vertical; */
         border: 2px solid black;
-        /* overflow: auto; */
+        position: relative;
     }
     .pie p {
-        position: relative;
+        text-align: center;  
+        position:absolute;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
 

@@ -27,7 +27,7 @@ export default {
 
         console.log(pModelo);
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDEyOTE5MzksImV4cCI6MTY0MTM3ODMzOSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0._5pUv_4gB5SNjrBbnh77oDtGrx5d0A2oGi1ScuL81QU";
+        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDE4MjQwODcsImV4cCI6MTY0MTkxMDQ4NywiZGF0YSI6eyJ1c2VyX2lkIjozfX0.XG89MhPaSEprLGp-BEqhXXq7A7KKcAXvfw9RKktSD_k";
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 

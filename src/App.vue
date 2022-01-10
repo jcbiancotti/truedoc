@@ -31,7 +31,6 @@
     @import url('https://fonts.googleapis.com/css?family=Lato');
     @import url('https://fonts.googleapis.com/css?family=Open+Sans');
     @import url('https://fonts.googleapis.com/css?family=Pt Sans');
-    @import url('https://fonts.googleapis.com/css?family=Droid+Sans');
     @import url('https://fonts.googleapis.com/css?family=Arvo');
     @import url('https://fonts.googleapis.com/css?family=Patua+One');
     @import url('https://fonts.googleapis.com/css?family=Cookie');
