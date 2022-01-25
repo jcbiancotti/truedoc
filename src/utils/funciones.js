@@ -18,6 +18,7 @@ export default {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: textobotonOk,
+            cancelButtonText: "Cancelar",
             timer: tiempo
         })
         return resultado.isConfirmed;
@@ -25,9 +26,10 @@ export default {
     },
     async generarPDFmuestra(pModelo) {
 
-        console.log(pModelo);
+        if(global.DEBUG)
+            console.log(pModelo);
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDE4MjQwODcsImV4cCI6MTY0MTkxMDQ4NywiZGF0YSI6eyJ1c2VyX2lkIjozfX0.XG89MhPaSEprLGp-BEqhXXq7A7KKcAXvfw9RKktSD_k";
+        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDMwMjg5NDksImV4cCI6MTY0MzExNTM0OSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.tGog9ZYUWJGnGuTcJgV23lXKJ9x_C6c2_sLksCfupNY";
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
@@ -109,7 +111,162 @@ export default {
             retId += (Math.random() * 10).toFixed(8).toString()
         }
         return retId
+    },
+    datosFuente(txtFuente, todas) {
+
+        let aFuentes = [
+            {valor:  0, texto: 'anton',         b: false, i: false},
+            {valor:  1, texto: 'arvo',          b: true, i: true},
+            {valor:  2, texto: 'audiowide',     b: false, i: false},
+            {valor:  3, texto: 'bungee inline', b: false, i: false},
+            {valor:  4, texto: 'cabin',         b: true, i: true},
+            {valor:  5, texto: 'cookie',        b: false, i: false},
+            {valor:  6, texto: 'courier',       b: true, i: true},
+            {valor:  7, texto: 'dancing script',b: true, i: false},
+            {valor:  8,	texto: 'elsie',         b: true, i: false},
+            {valor:  9, texto: 'helvetica',     b: true, i: true},
+            {valor: 10, texto: 'lato',          b: true, i: true},
+            {valor: 11, texto: 'montserrat',    b: true, i: true},
+            {valor: 12, texto: 'open sans',     b: true, i: true},
+            {valor: 13, texto: 'oswald',        b: true, i: false},
+            {valor: 14, texto: 'patua one',     b: false, i: false},
+            {valor: 15, texto: 'pt sans',       b: true, i: true},
+            {valor: 16, texto: 'roboto',        b: true, i: true},
+            {valor: 17, texto: 'roboto slab',   b: true, i: false},    
+            {valor: 18, texto: 'sofia',         b: false, i: false},
+            {valor: 19, texto: 'symbol',        b: false, i: false},
+            {valor: 20, texto: 'tangerine',     b: true, i: false},
+            {valor: 21, texto: 'times',         b: true, i: true},
+            {valor: 22, texto: 'titan one',     b: false, i: false},
+            {valor: 23, texto: 'trash-hand',    b: false, i: false},
+            {valor: 24, texto: 'trirong',       b: true, i: true},
+            {valor: 25, texto: 'varela round',  b: false, i: false},
+            {valor: 26, texto: 'vollkorn',      b: true, i: true},
+            {valor: 27, texto: 'zapfdingbats',  b: false, i: false} 
+        ]
+        
+        if (todas == true) {
+            return aFuentes;
+        } else {
+            return aFuentes[aFuentes.findIndex(x => x.texto === txtFuente)];
+        }
+
+    },
+    getPreview(pModeloCampos, pTexto) {
+
+        let letra = '';
+        let cTabla = '';
+        let cCampo = '';
+        let cTipo = 'C';
+        let acumulando_tabla = false;
+        let acumulando_campo = false;
+        let txt = '';
+        let ncampo = -1;
+
+        for(let t=0; t < pTexto.length; t++) {
+
+            letra = pTexto.substr(t, 1);
+
+            if(letra == '[') {
+                // comienza tabla
+                acumulando_tabla = true;
+            }
+            if(letra == ']') {
+                // final tabla y campo
+                acumulando_tabla = false;
+                acumulando_campo = false;
+
+                ncampo = pModeloCampos.findIndex(x => x.tabla === cTabla && x.nombre === cCampo);
+                if(ncampo != -1) {
+                    cTipo = pModeloCampos[ncampo].tipo;
+                    txt += this.getModelo(cTipo, pModeloCampos[ncampo].ancho);                        
+                }
+
+                cTabla = '';
+                cCampo = '';
+                cTipo = 'C';
+                ncampo = -1;
+
+            }                
+            if(acumulando_tabla && letra == '.') {
+                // comienza campo
+                acumulando_tabla = false;
+                acumulando_campo = true;
+            }
+            if(acumulando_tabla && letra != '[') {
+                cTabla += letra;
+            }
+            if(acumulando_campo && letra != '.' && letra != ']') {
+                cCampo += letra;
+            }
+
+            if(!acumulando_tabla && !acumulando_campo && letra != ']') {
+                txt += letra;
+            }
+
+        }
+        return txt;
+        
+    },
+    getModelo(pTipo, pAncho) {
+
+        let ttx = '';
+        switch (pTipo) {
+            case 'C':
+                if (pAncho > 0) {
+                    ttx = Array(pAncho + 1).join("X");
+                }
+                break;
+
+            case 'N': 
+                ttx = '-1.234';
+                if (pAncho > 0) {
+                    ttx += ',' + Array(pAncho + 1).join("0");
+                }
+                break;
+
+            case 'M':
+                ttx = '-1.234,56 €';
+                break;
+
+            case 'D':
+                ttx = '01/01/2022';
+                break;
+
+            case 'T':
+                ttx = '01/01/2022 14:30:15 hs';
+                break;
+
+            case 'H':
+                ttx = '14:30:15 hs';   
+                break;
+
+        }
+        return ttx;
+
+    },
+    async subirAdjunto(pRuta, pArchivo) {
+        // sube un fichero al backend
+
+        // Recuperar el token almacenado en la cookie
+        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDMwMjg5NDksImV4cCI6MTY0MzExNTM0OSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.tGog9ZYUWJGnGuTcJgV23lXKJ9x_C6c2_sLksCfupNY";
+
+        if(!localStorage.token) {
+            return null;
+        } else {
+
+            let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
+
+            let formData = new FormData();
+            formData.append('file', pArchivo, pRuta + pArchivo['name']);
+
+            var resultado = await axios.post(global.ENDPOINT_PATH + "sistema/recibeAdjuntos.php", formData, opciones);
+            return resultado.data;
+
+        }
+
     }
+
 
 
 

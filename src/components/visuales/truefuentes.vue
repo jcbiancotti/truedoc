@@ -10,32 +10,16 @@
 
 <script>
 
+import funciones from '@/utils/funciones'
+
 export default {
     name: 'truefuentes',
     data() {
+        
+        let aFuentes = funciones.datosFuente('', true);
+
         return {
-            aFuentes: [
-                {valor: 1,  texto: 'Anton'},
-                {valor: 2,  texto: 'Audiowide'},
-                {valor: 3,  texto: 'Bungee Inline'},
-                {valor: 4,  texto: 'Cabin'},
-                {valor: 5,  texto: 'Cookie'},
-                {valor: 6,  texto: 'Dancing Script'},
-                {valor: 7,  texto: 'Lato'},
-                {valor: 8,  texto: 'Montserrat'},
-                {valor: 9,  texto: 'Open Sans'},
-                {valor: 10, texto: 'Oswald'},
-                {valor: 11, texto: 'Patua One'},
-                {valor: 12, texto: 'Pt+Sans'},
-                {valor: 13, texto: 'Roboto'},
-                {valor: 14, texto: 'Roboto Slab'},
-                {valor: 15, texto: 'Sofia'},
-                {valor: 16, texto: 'Tangerine'},
-                {valor: 17, texto: 'Titan One'},
-                {valor: 18, texto: 'Trirong'},
-                {valor: 19, texto: 'Varela Round'},
-                {valor: 20, texto: 'Vollkorn'}
-            ],
+            aFuentes,
         }
     },
     props: ['id','valor'],
@@ -43,7 +27,10 @@ export default {
 
         // devolver la fuente seleccionada
 		setData(e) {
-			this.$emit("getData", this.id, e.target.value);
+            let x = this.aFuentes.findIndex(x => x.texto === e.target.value);
+            if(x != -1){
+                this.$emit("getData", this.id, e.target.value, this.aFuentes[x].b, this.aFuentes[x].i);
+            }
 		},
 
 	},

@@ -1,5 +1,15 @@
+@font-face {
+    font-family: "Trash-Hand";
+    src: url("fuentes/TrashHand.ttf") format("TrueType");
+}
+@font-face {
+    font-family: "ZapfDingbats";
+    src: url("fuentes/ZapfDingbats.ttf") format("TrueType");
+}
+
+
 #app {
-    font-family: Open Sans, Helvetica, Arial, sans-serif;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
@@ -98,11 +108,11 @@ input::-ms-input-placeholder { /* Microsoft Edge */
 }
 /* Estas reglas se aplicarán a todos las elementos i después de cualquier input*/
 .content-input input + i{
-       background: #f0f0f0;
-       border:2px solid rgba(0,0,0,0.2);
-       position: absolute; 
-       left: 0;
-       top: 0;
+    background: #f0f0f0;
+    border:2px solid rgba(0,0,0,0.2);
+    position: absolute; 
+    left: 0;
+    top: 0;
 }
 /* Estas reglas se aplicarán a todos los i despues de un input de tipo checkbox*/
 .content-input input[type=checkbox ] + i{
