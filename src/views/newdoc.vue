@@ -5,22 +5,22 @@
 
     <!-- TABS -->
     <ul class="nav nav-pills" role="tablist">
-        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#datos-docu">Metadatos</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-formato">Formato</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-encabezado">Contenido del encabezado</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-subencabezado">Contenido del sub-encabezado</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-cuerpo">Contenido del cuerpo</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-subtotales">Contenido del subt-total</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-pie">Contenido del pie</a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#datos-campos">Campos utilizados</a></li>
-        <li class="nav-item"><a class="nav-link" @click="Grabar()">Grabar</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-toggle="tab" href="#datos-docu">Metadatos</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 2}" @click="tab=2" data-toggle="tab" href="#datos-formato">Formato</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 3}" @click="tab=3" data-toggle="tab" href="#datos-encabezado">Contenido del encabezado</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 4}" @click="tab=4" data-toggle="tab" href="#datos-subencabezado">Contenido del sub-encabezado</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 5}" @click="tab=5" data-toggle="tab" href="#datos-cuerpo">Contenido del cuerpo</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 6}" @click="tab=6" data-toggle="tab" href="#datos-subtotales">Contenido del subt-total</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 7}" @click="tab=7" data-toggle="tab" href="#datos-pie">Contenido del pie</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 8}" @click="tab=8" data-toggle="tab" href="#datos-campos">Campos utilizados</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 9}" @click="Grabar()">Grabar</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
 
         <!-- METADATOS -->
-        <div id="datos-docu" class="container-fluid tab-pane fade show active"><br>
+        <div id="datos-docu" class="container-fluid tab-pane fade " :class="{show : tab == 1, active : tab == 1}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -37,7 +37,7 @@
                                 <label>(*) T&iacute;tulo:</label>
                             </div>
                             <div class="w-50 text-left pl-4">
-                                <input type="text" class="form-control" v-model="modelo.oMetadatos.titulo" placeholder="Nombre para identificar el documento">
+                                <input type="text" class="form-control" v-model="modelo.oMetadatos.titulo" placeholder="Nombre para identificar el documento" :class="{conerror : hayerror == 3, sinerror : hayerror == 0}">
                             </div>
                         </div> 
 
@@ -46,7 +46,7 @@
                                 <label>(*) Versi&oacute;n:</label>
                             </div>
                             <div class="w-50 text-left pl-4">
-                                <input type="text" class="form-control" v-model="modelo.oMetadatos.version" placeholder="Versión del documento">
+                                <input type="text" class="form-control" v-model="modelo.oMetadatos.version" placeholder="Versión del documento" :class="{conerror : hayerror == 3, sinerror : hayerror == 0}">
                             </div>
                         </div>
 
@@ -85,7 +85,7 @@
         </div>
 
         <!-- FORMATO -->
-        <div id="datos-formato" class="container-fluid tab-pane fade"><br>
+        <div id="datos-formato" class="container-fluid tab-pane fade" :class="{show : tab == 2, active : tab == 2}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -226,7 +226,7 @@
         </div>
 
         <!-- ENCABEZADO -->
-        <div id="datos-encabezado" class="container-fluid tab-pane fade"><br>
+        <div id="datos-encabezado" class="container-fluid tab-pane fade" :class="{show : tab == 3, active : tab == 3}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -343,7 +343,7 @@
         </div>
 
         <!-- SUB-ENCABEZADO -->
-        <div id="datos-subencabezado" class="container-fluid tab-pane fade"><br>
+        <div id="datos-subencabezado" class="container-fluid tab-pane fade" :class="{show : tab == 4, active : tab == 4}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -360,7 +360,7 @@
 
                             <div class="fullpage-header" :style="`${'height:' + hSubHeader * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
 
-                                <label class="txt-preview" v-for="txt of modelo.oSubHeader.textos" :key="txt.id"
+                                <label class="col-preview" v-for="txt of modelo.oSubHeader.textos" :key="txt.id"
                                     :style="`${'width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
                                 >
                                     <span v-if="txt.mostrar">{{txt.preview}}</span>
@@ -385,23 +385,53 @@
         </div>
 
         <!-- CUERPO -->
-        <div id="datos-cuerpo" class="container-fluid tab-pane fade"><br>
+        <div id="datos-cuerpo" class="container-fluid tab-pane fade" :class="{show : tab == 5, active : tab == 5}"><br>
 
-            <div class="card text-center">
+            <div class="row justify-content-center">
+            <div class="card" style="width: 90%;">
                 
                 <div class="card-header">
                     <h3>Contenido del cuerpo</h3>
                 </div>
-                <div class="card-body">
+
+                <div class="card-body" style="height: auto; overflow: auto;">
+
+                    <MDBAccordion v-model="activeItemB" stayOpen flush>
+
+                        <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Vista previa del Cuerpo" collapseId="collapseBOne">
+
+                            <div class="fullpage-header" :style="`${'height:' + hBody * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oBody.backcolor}`">
+
+                                <div v-for="n in 5" :key="n" style="border: solid 1px black">
+
+                                    <label class="col-preview" v-for="txt of modelo.oBody.textos" :key="txt.id"
+                                        :style="`${'border: 1px solid black;width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
+                                    >
+                                        <span v-if="txt.mostrar">{{n}} {{txt.preview}}</span>
+                                    </label>
+
+                                </div>
+
+                            </div> 
+
+                        </MDBAccordionItem>
+                        <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Columnas" collapseId="collapseBTwo">
+                            
+                            <textos objeto="oBody" :modelo="modelo" @getData="getData"/> 
+
+                        </MDBAccordionItem>
+                        
+                    </MDBAccordion>      
 
                 </div>
 
+            </div>
             </div>
 
         </div>        
 
         <!-- SUBTOTAL -->
-        <div id="datos-subtotales" class="container-fluid tab-pane fade"><br>
+        <div id="datos-subtotales" class="container-fluid tab-pane fade" :class="{show : tab == 6, active : tab == 6}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -424,7 +454,7 @@
                                     <span v-if="txt.mostrar">{{txt.preview}}</span>
                                 </label>
 
-                            </div> 
+                            </div>
 
                         </MDBAccordionItem>
                         <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Textos" collapseId="collapseSTTwo">
@@ -443,7 +473,7 @@
         </div>
 
         <!-- PIE -->
-        <div id="datos-pie" class="container-fluid tab-pane fade"><br>
+        <div id="datos-pie" class="container-fluid tab-pane fade" :class="{show : tab == 7, active : tab == 7}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -485,7 +515,7 @@
         </div>
 
         <!-- CAMPOS -->
-        <div id="datos-campos" class="container-fluid tab-pane fade"><br>
+        <div id="datos-campos" class="container-fluid tab-pane fade" :class="{show : tab == 8, active : tab == 8}"><br>
 
             <div class="row justify-content-center">
             <div class="card" style="width: 90%;">
@@ -510,7 +540,7 @@
                                 </td>
                                 <td>
                                     <label for="campoTipo" style="padding-right: 10px;">Tipo/formato del campo:</label>
-                                    <select id="campoTipo" class="form-control" v-model="campoTipo">
+                                    <select id="campoTipo" class="form-control" v-model="campoTipo" @change="campoAncho = 0">
                                         <option class="form-control" value="C">Cadena de carecteres</option>
                                         <option class="form-control" value="N">Númerico</option>
                                         <option class="form-control" value="M">Moneda</option>
@@ -525,7 +555,10 @@
 
                                     <div style="display:block;">
                                         <label style="padding-right: 10px;">Ejemplo:</label>
-                                        <label style="padding-right:10px;">{{getModelo(campoTipo)}}</label>
+                                        <label style="padding-right:10px;">
+                                            {{getModelo('campo').substr(0,30)}}
+                                            <span v-if="campoAncho > 30">...</span>
+                                        </label>
                                     </div>
 
 
@@ -625,13 +658,15 @@ export default {
 
         const activeItemH = ref('collapseOne');
         const activeItemS = ref('collapseSOne');
+        const activeItemB = null;   //ref('collapseBTwo');
         const activeItemST = ref('collapseSTOne');
         const activeItemP = ref('collapsePOne');
 
         return {
+            tab: 1,
             hayerror: 0,
             hiddentelon: true,
-            activeItemH, activeItemS, activeItemST, activeItemP,
+            activeItemH, activeItemS, activeItemB, activeItemST, activeItemP,
             logopreview: null,
             // Introduccion de campos
             campoID: funciones.generarUUID2(),
@@ -676,7 +711,8 @@ export default {
                 oBody: {
                     backcolor: "#FFFFFF",
                     height: (842*55/100),
-                    hPorce: 55,                
+                    hPorce: 55,   
+                    textos: [], 
                 },
                 oSubTotales: {
                     backcolor: "#FFFFFF",
@@ -763,8 +799,21 @@ export default {
 
 
         },
-        getModelo() {
-            return funciones.getModelo(this.campoTipo, this.campoAncho);
+        getModelo(pCual) {
+
+            let tipo = 'C';
+            let ancho = 0;
+
+            if(pCual == 'campo') {
+                tipo = this.campoTipo;
+                ancho = this.campoAncho;
+            }
+            if(pCual == 'columna') {
+                tipo = this.columnaTipo;
+                ancho = this.columnaAncho;
+            }
+            return funciones.getModelo(tipo, ancho);
+
         },
         cargalogo(e) {
             if(e.target.files[0]) {
@@ -945,6 +994,7 @@ export default {
             this.campoTabla = this.modelo.oCampos[x].tabla;
             this.campoNombre = this.modelo.oCampos[x].nombre; 
             this.campoTipo = this.modelo.oCampos[x].tipo;
+            this.campoAncho = this.modelo.oCampos[x].ancho;
 
             document.getElementById('campoTabla').focus();
 
@@ -966,7 +1016,14 @@ export default {
         },
         Grabar() {
 
-             funciones.popAlert('question', 'Quieres guardar los cambios en la definición del documento?', true, true, 8000, "Sí")
+            // Validar metadatos
+            if(this.modelo.oMetadatos.titulo == '' || this.modelo.oMetadatos.version == 0) {
+                this.hayerror = 3;
+                this.tab = 1;
+                return
+            }
+
+             funciones.popAlert('question', 'Quieres guardar la definición del documento?', true, true, 8000, "Sí")
             .then((result) => {
 
                 if(result==true) {
@@ -1156,7 +1213,7 @@ export default {
                             // Textos del subencabezado
                             for(let t = 0; t < tmp.oSubHeader.textos.length; t++) {
 
-                                tt = tmp.oHeader.textos[t];
+                                tt = tmp.oSubHeader.textos[t];
 
                                 almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.id", valor: t}; 
                                 datos.grabarDocumento(almacenar);
@@ -1228,15 +1285,86 @@ export default {
                             }
 
                             // Body ///////////////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. backcolor", objeto: "oSubHeader", propiedad: "backcolor", valor: tmp.oSubHeader.backcolor};
+                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. backcolor", objeto: "oBody", propiedad: "backcolor", valor: tmp.oBody.backcolor};
                             datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. height", objeto: "oSubHeader", propiedad: "height", valor: tmp.oSubHeader.height};
+                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. height", objeto: "oBody", propiedad: "height", valor: tmp.oBody.height};
                             datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. hPorce", objeto: "oSubHeader", propiedad: "hPorce", valor: tmp.oSubHeader.hPorce};
+                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. hPorce", objeto: "oBody", propiedad: "hPorce", valor: tmp.oBody.hPorce};
                             datos.grabarDocumento(almacenar);
 
                             // Textos del body
-                            // ?????????????????????????????????????????????????????
+                            for(let t = 0; t < tmp.oBody.textos.length; t++) {
+
+                                tt = tmp.oBody.textos[t];
+
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.id", valor: t}; 
+                                datos.grabarDocumento(almacenar);
+
+                                if(tt.mostrar) {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.mostrar", valor: 'true'}; 
+                                } else {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.mostrar", valor: 'false'}; 
+                                }
+                                datos.grabarDocumento(almacenar);
+
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.texto", valor: tt.texto}; 
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.fuente", valor: tt.fuente};
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.tamanio", valor: tt.tamanio};
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.color", valor: tt.color};
+                                datos.grabarDocumento(almacenar);
+
+                                if(tt.estilo) {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.estilo", valor: 'true'};
+                                } else {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.estilo", valor: 'false'};
+                                } 
+                                datos.grabarDocumento(almacenar);
+
+                                if(tt.enbEstilo) {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbEstilo", valor: 'true'};
+                                } else {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbEstilo", valor: 'false'};
+                                }
+                                datos.grabarDocumento(almacenar);
+
+                                if(tt.italica) {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.italica", valor: 'true'};
+                                } else {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.italica", valor: 'false'};
+                                }
+                                datos.grabarDocumento(almacenar); 
+
+                                if(tt.enbItalica) {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbItalica", valor: 'true'};
+                                } else {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbItalica", valor: 'false'};
+                                }
+                                datos.grabarDocumento(almacenar);
+
+                                if(tt.subrayado) {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.subrayado", valor: 'true'}; 
+                                } else {
+                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.subrayado", valor: 'false'}; 
+                                }
+                                datos.grabarDocumento(almacenar);
+
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.cssestilo", valor: tt.cssestilo}; 
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.cssitalica", valor: tt.cssitalica};
+                                datos.grabarDocumento(almacenar); 
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.csssubrayado", valor: tt.csssubrayado};
+                                datos.grabarDocumento(almacenar);                     
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.posY", valor: tt.posY};
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.posX", valor: tt.posX};
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.preview", valor: tt.preview};
+                                datos.grabarDocumento(almacenar);
+
+                            }
 
                             // Sub-Totales ////////////////////////////////////////
                             almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. backcolor", objeto: "oSubTotales", propiedad: "backcolor", valor: tmp.oSubTotales.backcolor};
@@ -1249,7 +1377,7 @@ export default {
                             // Textos del Subtotales
                             for(let t = 0; t < tmp.oSubTotales.textos.length; t++) {
 
-                                tt = tmp.oHeader.textos[t];
+                                tt = tmp.oSubTotales.textos[t];
 
                                 almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.id", valor: t}; 
                                 datos.grabarDocumento(almacenar);
@@ -1331,7 +1459,7 @@ export default {
                             // Textos del Pie
                             for(let t = 0; t < tmp.oPie.textos.length; t++) {
 
-                                tt = tmp.oHeader.textos[t];
+                                tt = tmp.oPie.textos[t];
 
                                 almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.id", valor: t}; 
                                 datos.grabarDocumento(almacenar);
@@ -1398,6 +1526,24 @@ export default {
                                 almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.posX", valor: tt.posX};
                                 datos.grabarDocumento(almacenar);
                                 almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.preview", valor: tt.preview};
+                                datos.grabarDocumento(almacenar);
+
+                            }
+
+                            // CAMPOS /////////////////////////////////////////////
+                            for(let t = 0; t < tmp.oCampos.length; t++) {
+
+                                tt = tmp.oCampos[t];
+
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. Id", objeto: "oCampos", propiedad: "id", valor: tt.id}; 
+                                datos.grabarDocumento(almacenar);
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. tabla", objeto: "oCampos", propiedad: "tabla", valor: tt.tabla}; 
+                                datos.grabarDocumento(almacenar);                                
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. nombre", objeto: "oCampos", propiedad: "nombre", valor: tt.nombre}; 
+                                datos.grabarDocumento(almacenar);                                
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. tipo", objeto: "oCampos", propiedad: "tipo", valor: tt.tipo}; 
+                                datos.grabarDocumento(almacenar);                                
+                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. ancho", objeto: "oCampos", propiedad: "ancho", valor: tt.ancho}; 
                                 datos.grabarDocumento(almacenar);
 
                             }
@@ -1610,6 +1756,16 @@ export default {
     .txt-preview {
         height:auto;
         position: absolute;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: horizontal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .col-preview {
+        height:auto;
+        position: relative;
         display: -webkit-box;
         -webkit-line-clamp: 1;
         -webkit-box-orient: horizontal;

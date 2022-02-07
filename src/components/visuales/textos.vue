@@ -41,7 +41,7 @@
                     <input type="text" class="form-control" id="txtTexto"
                         :class="{conerror : hayerror == 1, sinerror : hayerror == 0}"
                         v-model="txtTexto"
-                        :style="`${'height:auto;font-family:' + txtFuente + ';font-weight:' + cssEstilo + ';font-style: ' + cssItalica + ';text-decoration:' + cssSubrayado + ';font-size:' + txtTamanio + 'pt;color:' + txtColor}`" 
+                        :style="`${'height:auto;font-family:' + txtFuente + ';font-weight:' + cssEstilo + ';font-style: ' + cssItalica + ';text-decoration:' + cssSubrayado + ';font-size:' + txtTamanio + 'pt;color:' + txtColor + ';background-color:' + txtBkColor}`" 
                         placeholder="Escribe aquí el texto que deseas incluir"
                     >
                     <p style="font-size: 8pt;">Para indicar que es un campo de una tabla debes encerrarlo entre corchetes. Por ejemplo: Fecha [facturas.fecha_factura]</p>
@@ -87,7 +87,7 @@
                     </td>
                     <td scope="row">
                         <p
-                            :style="`${'max-width:100%;height:auto;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + txt.tamanio + 'pt;color:' + txt.color}`" 
+                            :style="`${'max-width:100%;height:auto;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + txt.tamanio + 'pt;color:' + txt.color + ';background-color:' + txtBkColor}`" 
                         >
                         {{txt.texto}}</p>
                     </td>
@@ -136,7 +136,8 @@ export default {
             txtTamanio: 12,
             txtColor: '#000000',
             txtPosY: 10,
-            txtPosX: 10,            
+            txtPosX: 10,    
+            
         }
     },
     components:{
@@ -333,6 +334,11 @@ export default {
 
     },
     computed: {
+        txtBkColor: {
+            get() {
+                return this.modelo[this.objeto].backcolor;
+            }
+        },
         cssEstilo: {
             get() {
                 if(this.txtEstilo == true) {

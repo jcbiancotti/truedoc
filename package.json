@@ -21,7 +21,8 @@
     "vue-resource": "^1.5.3",
     "vue-router": "^4.0.0-0",
     "vue-sweetalert2": "^5.0.2",
-    "vuejs-loading-screen": "^1.10.1"
+    "vuejs-loading-screen": "^1.10.1",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

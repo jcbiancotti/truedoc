@@ -2,19 +2,61 @@
 <div class="container-fluid">
 
     <h3>Plantillas de los documentos</h3>
-    <nav class="navbar navbar-expand-md p-0">
-        <div class="col text-left" style="border: 1px solid blue; padding-top:2px; padding-bottom:2px ;background-color: var(--true-color-empresa);">
+    <h5>{{fName}}</h5>
 
-            <router-link to="/" class="btn float-left">Home <i class="fa fa-home"></i></router-link>
-            <router-link to="/newdoc" class="btn float-left">Nuevo <i class="far fa-file"></i></router-link>
-
-        </div>
-    </nav>
-
+    <navbar />
     <router-view/>
 
 </div>
 </template>
+<script>
+
+import store from '@/store'
+import auth from '@/utils/auth'
+import navbar from '@/components/visuales/navbar'
+
+export default {
+    name: 'App',
+    data() {
+        return {
+            
+        }
+    },
+    components:{
+        navbar
+    },
+    methods: {
+
+    },
+    beforeCreate() {
+        if(localStorage.token) {
+            store.commit('marcaLogged', true);
+            store.commit('marcaFullName', localStorage.userFullName);
+            try {
+                auth.getUserLogged()
+                .then((result) => {
+                    if(result == null) {
+                        store.commit('marcaLogged', false);
+                        store.commit('marcaFullName', '');                        
+                    }
+                })
+
+            } catch(error) {
+                console.log(error)
+            }
+        }
+    },
+    computed: {
+        fName:{
+            get() {
+                return store.state.userFullName;
+            }
+        }
+    }
+
+}
+</script>
+
 
 <style>
 

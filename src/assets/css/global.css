@@ -25,8 +25,12 @@
     color: red;
 }
 .sinerror {
-    border: 2px solid var(--true-letras-color);
+    border: 2px solid var(--true-border-color);
     color: var(--true-letras-color);
+}
+.mensaje {
+    color: red;
+    font-weight: bold;
 }
 .btn {
     background-color: white;

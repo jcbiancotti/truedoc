@@ -22,8 +22,6 @@ export default {
     },
     async leerLista(pTabla, pClave, pModelo, pOrden) {
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDMwMjg5NDksImV4cCI6MTY0MzExNTM0OSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.tGog9ZYUWJGnGuTcJgV23lXKJ9x_C6c2_sLksCfupNY";
-
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
         // Objeto consulta
@@ -45,8 +43,6 @@ export default {
     },
     async grabarHeadDocumento(pModelo) {
 
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDMwMjg5NDksImV4cCI6MTY0MzExNTM0OSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.tGog9ZYUWJGnGuTcJgV23lXKJ9x_C6c2_sLksCfupNY";
-
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
         let envio = {
@@ -64,8 +60,6 @@ export default {
             
     },
     async grabarDocumento(pModelo) {
-
-        localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDMwMjg5NDksImV4cCI6MTY0MzExNTM0OSwiZGF0YSI6eyJ1c2VyX2lkIjozfX0.tGog9ZYUWJGnGuTcJgV23lXKJ9x_C6c2_sLksCfupNY";
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
