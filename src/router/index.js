@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-import About from '@/views/About.vue'
 import auth from '@/utils/auth'
 
 import store from '@/store'
@@ -31,9 +30,9 @@ const routes = [
         meta: { requiresAuth: true}
     },
     {
-        path: '/editdoc',
+        path: '/editdoc/:p_claveId?',
         name: 'Editdoc',
-        component: About,
+        component: () => import('@/views/newdoc.vue'),
         meta: { requiresAuth: true}
     },
     {

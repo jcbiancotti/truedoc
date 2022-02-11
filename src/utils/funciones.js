@@ -251,9 +251,6 @@ export default {
     async subirAdjunto(pRuta, pArchivo) {
         // sube un fichero al backend
 
-        // Recuperar el token almacenado en la cookie
-        // localStorage.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJhdWQiOiJ0cnVlc29mdHdhcmVfZXNwYVx1MDBmMWEiLCJpYXQiOjE2NDMyMTc3MjcsImV4cCI6MTY0MzMwNDEyNywiZGF0YSI6eyJ1c2VyX2lkIjozfX0.45aJ-YwwNKvcjzndYIt7C9S-ndCICq8upAt9MYdK-IE";
-
         if(!localStorage.token) {
             return null;
         } else {
@@ -269,42 +266,22 @@ export default {
         }
 
     },
-    // async cargaUser() {
+    async rutaAdjunto(pArchivo) {
+        // pide la ruta del adjunto al backend
 
-    //     try {
+        let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
-    //         auth.getUserLogged()
-    //         .then((result) => {
+        // Objeto consulta
+        let consulta = 
+        {
+            "filename": pArchivo
+        }  
+        var resultado = await axios.post(global.ENDPOINT_PATH + "sistema/recuperaAdjunto.php", consulta, opciones);
+        resultado.data.data[0] = global.ENDPOINT_PATH + resultado.data.data[0].substr(5);
+        return resultado.data;
 
-    //             if (result == null) {
-    //                 global.usuario.logged = false;
-    //                 global.usuario.userId = 0,
-    //                 global.usuario.userEmail = '',
-    //                 global.usuario.userName = '';
-    //                 global.usuario.userFullName = '';
-    //                 global.usuario.userRoles = [];
 
-    //             } else {
-    //                 global.usuario.logged = true;
-    //                 global.usuario.userId = result.data.clave,
-    //                 global.usuario.userEmail = result.data.correo,
-    //                 global.usuario.userName = result.data.nombre;
-    //                 global.usuario.userFullName = result.data.nombre_completo;
-    //                 global.usuario.userRoles = [];
-            
-    //             }
-
-    //             console.log("Funciones.cargaUser", global.usuario)
-
-    //             return global.usuario;
-
-    //         })
-
-    //     } catch(error) {
-    //         console.log(error);
-    //     }
-
-    // },
+    },    
 
 
 

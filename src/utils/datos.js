@@ -41,7 +41,7 @@ export default {
         return resultado.data;          
             
     },
-    async grabarHeadDocumento(pModelo) {
+    async grabarHeadDocumento(pObjeto) {
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
@@ -49,7 +49,7 @@ export default {
             "operacion":"ADD",
             "tabla":'sys_head_documentos',
             "modelo": ["id", "titulo", "version", "activa"],
-            "objeto": pModelo
+            "objeto": pObjeto
         }    
         let resultado = await axios.post(global.ENDPOINT_PATH + 'datos/data_manager.php', envio, opciones);
  
@@ -59,15 +59,15 @@ export default {
         return resultado.data;          
             
     },
-    async grabarDocumento(pModelo) {
+    async grabarDocumento(pObjeto) {
 
         let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
 
         let envio = {
             "operacion":"ADD",
             "tabla":'sys_documentos',
-            "modelo": ["id", "descripcion", "objeto", "propiedad", "valor"],
-            "objeto": pModelo
+            "modelo": ["id", "objeto"],
+            "objeto": pObjeto
         }    
         let resultado = await axios.post(global.ENDPOINT_PATH + 'datos/data_manager.php', envio, opciones);
  
@@ -76,6 +76,68 @@ export default {
     
         return resultado.data;          
             
+    },
+    async actualizarHeadDocumento(pClave, pObjeto) {
+
+        let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
+
+        let envio = {
+            "operacion":"UPDATE",
+            "tabla": 'sys_head_documentos',
+            "clave": pClave,
+            "modelo": ["id", "titulo", "version", "activa"],
+            "objeto": pObjeto
+        }    
+        let resultado = await axios.post(global.ENDPOINT_PATH + 'datos/data_manager.php', envio, opciones);
+ 
+        if(global.DEBUG)
+            console.log("datos.actualizarHeadDocumento", "datos devueltos back", resultado);
+    
+        return resultado.data;          
+            
+    },
+    async actualizarDocumento(pClave, pObjeto) {
+
+        let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
+
+        let envio = {
+            "operacion":"UPDATE",
+            "tabla": 'sys_documentos',
+            "clave": pClave,
+            "modelo": ["id", "objeto"],
+            "objeto": pObjeto
+        }    
+        let resultado = await axios.post(global.ENDPOINT_PATH + 'datos/data_manager.php', envio, opciones);
+ 
+        if(global.DEBUG)
+            console.log("datos.actualizarDocumento", "datos devueltos back", resultado);
+    
+        return resultado.data;          
+            
+    },
+    async borrarDocumento(pClave) {
+
+        let opciones = { 'headers': { 'Authorization': 'Bearer ' + localStorage.token} };
+
+        let envio = {
+            "operacion":"DELETE",
+            "tabla": 'sys_head_documentos',
+            "clave": pClave,
+        }    
+        let resultado = await axios.post(global.ENDPOINT_PATH + 'datos/data_manager.php', envio, opciones);
+ 
+        envio = {
+            "operacion":"DELETE",
+            "tabla": 'sys_documentos',
+            "clave": pClave,
+        }    
+        resultado = await axios.post(global.ENDPOINT_PATH + 'datos/data_manager.php', envio, opciones);
+ 
+        if(global.DEBUG)
+            console.log("datos.borrarDocumento", "datos devueltos back", resultado);
+    
+        return resultado.data; 
+
     }
 
 

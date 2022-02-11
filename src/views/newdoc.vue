@@ -3,10 +3,11 @@
 
     <telon :hidden="hiddentelon"/>
 
+    <h1 v-if="claveId != null">Editando documento: {{claveId}}</h1>
     <!-- TABS -->
     <ul class="nav nav-pills" role="tablist">
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-toggle="tab" href="#datos-docu">Metadatos</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 2}" @click="tab=2" data-toggle="tab" href="#datos-formato">Formato</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 2}" @click="tab=2" data-toggle="tab" href="#datos-formato">Secciones</a></li>
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 3}" @click="tab=3" data-toggle="tab" href="#datos-encabezado">Contenido del encabezado</a></li>
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 4}" @click="tab=4" data-toggle="tab" href="#datos-subencabezado">Contenido del sub-encabezado</a></li>
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 5}" @click="tab=5" data-toggle="tab" href="#datos-cuerpo">Contenido del cuerpo</a></li>
@@ -98,50 +99,70 @@
                     <table class="text-left">
                         <tr>
                             <td>
-                                <div class="fullpage" :style="`${'width:' + modelo.oMetadatos.ancho + 'px;height:' + modelo.oMetadatos.alto + 'px'}`">
+                                <div class="fullpage" :style="`${'width:' + modelo.oMetadatos.ancho / 2 + 'px;height:' + modelo.oMetadatos.alto / 2 + 'px'}`">
 
-                                    <div ref="encabezado" id="encabezado" class="encabezado" :style="`${'height:' + hHeader + 'px;background-color:' + modelo.oHeader.backcolor}`">
+                                    <!-- ENCABEZADO -->
+                                    <div @click="enfoca('E')" ref="encabezado" id="encabezado" class="encabezado" :style="`${'height:' + hHeader / 2 + 'px;background-color:' + modelo.oHeader.backcolor}`">
                                        
                                         <img v-if="logopreview && modelo.oHeader.logo.SiNo" 
                                             :src="logopreview" 
-                                            :height="`${logoHeight}`" 
-                                            :width="`${logoWidth}`" 
-                                            :style="`${'position:relative;left:' + (modelo.oHeader.logo.posX) + 'px;top:' + (modelo.oHeader.logo.posY) + 'px'}`"
+                                            :height="`${logoHeight / 2}`" 
+                                            :width="`${logoWidth / 2}`" 
+                                            :style="`${'position:relative;left:' + (modelo.oHeader.logo.posX / 2) + 'px;top:' + (modelo.oHeader.logo.posY / 2) + 'px'}`"
                                         />                                        
                                          <p>Encabezado</p>
                                         <label class="txt-preview" v-for="txt of modelo.oHeader.textos" :key="txt.id"
-                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
+                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) / 2 + 'px;top:' + (txt.posY / 2) + 'px;left:' + (txt.posX / 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio / 2) + 'pt;color:' + txt.color}`" 
                                         >
                                             <span v-if="txt.mostrar">{{txt.preview}}</span>
                                         </label>                                         
                                     </div>
-
-                                    <div ref="subencabezado" id="subencabezado" class="subencabezado" :style="`${'height:' + hSubHeader + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
+                                    <!-- SUB-ENCABEZADO -->
+                                    <div @click="enfoca('SE')" ref="subencabezado" id="subencabezado" class="subencabezado" :style="`${'height:' + hSubHeader / 2 + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
                                         <p>Sub-encabezado</p>
                                         <label class="txt-preview" v-for="txt of modelo.oSubHeader.textos" :key="txt.id"
-                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
+                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) / 2 + 'px;top:' + (txt.posY / 2) + 'px;left:' + (txt.posX / 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio / 2) + 'pt;color:' + txt.color}`" 
                                         >
                                             <span v-if="txt.mostrar">{{txt.preview}}</span>
                                         </label>                                         
                                     </div>
-
-                                    <div ref="cuerpo" id="cuerpo" class="cuerpo" :style="`${'height:' + hBody + 'px;background-color:' + modelo.oBody.backcolor}`">
+                                    <!-- CUERPO -->
+                                    <div @click="enfoca('B')" ref="cuerpo" id="cuerpo" class="cuerpo" :style="`${'height:' + (hBody / 2) + 'px;background-color:' + modelo.oBody.backcolor}`">
                                         <p>Cuerpo</p>
-                                    </div>
 
-                                    <div ref="subtotales" id="subtotales" class="subtotales" :style="`${'height:' + hSubTotales + 'px;background-color:' + modelo.oSubTotales.backcolor}`">
+                                        <table>
+                                            <tr v-for="n in 15" :key="n" class="renglon" style="height:8px">
+
+                                                <td>
+
+                                                    <div v-for="txt of modelo.oBody.textos" :key="txt.id" class="col-preview" :style="`${'left:' + (txt.posX / 2) + 'px;top:' + (txt.posY / 2) + 'px;'}`" >
+
+                                                        <span v-if="txt.mostrar" :style="`${'width:auto;top:0px;left:0;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio / 2) + 'pt;color:' + txt.color}`">
+                                                            {{txt.preview}}
+                                                        </span>
+
+                                                    </div>
+                                                    
+                                                </td>
+
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <!-- SUBTOTALES -->
+                                    <div @click="enfoca('ST')" ref="subtotales" id="subtotales" class="subtotales" :style="`${'height:' + hSubTotales / 2 + 'px;background-color:' + modelo.oSubTotales.backcolor}`">
                                         <p>Sub-totales</p>
                                         <label class="txt-preview" v-for="txt of modelo.oSubTotales.textos" :key="txt.id"
-                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
+                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) / 2 + 'px;top:' + (txt.posY / 2) + 'px;left:' + (txt.posX / 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio / 2) + 'pt;color:' + txt.color}`" 
                                         >
                                             <span v-if="txt.mostrar">{{txt.preview}}</span>
                                         </label>                                          
                                     </div>
-
-                                    <div ref="pie" id="pie" class="pie" :style="`${'height:' + hPie + 'px;background-color:' + modelo.oPie.backcolor}`">
+                                    <!-- PIE -->
+                                    <div @click="enfoca('P')" ref="pie" id="pie" class="pie" :style="`${'height:' + hPie / 2 + 'px;background-color:' + modelo.oPie.backcolor}`">
                                         <p>Pie del documento</p>
                                         <label class="txt-preview" v-for="txt of modelo.oPie.textos" :key="txt.id"
-                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
+                                            :style="`${'width:' + (modelo.oMetadatos.ancho - txt.posX - 5) / 2 + 'px;top:' + (txt.posY / 2) + 'px;left:' + (txt.posX / 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio / 2) + 'pt;color:' + txt.color}`" 
                                         >
                                             <span v-if="txt.mostrar">{{txt.preview}}</span>
                                         </label>                                         
@@ -156,7 +177,7 @@
                                         <label for="altura-header">Altura del encabezado</label><br>
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-header" name="porce-header" style="width:80px" min="0" :max="maxPorceHeader" v-model="modelo.oHeader.hPorce">%
+                                        <input ref="porceheader" type="number" id="porce-header" name="porce-header" style="width:80px" min="0" :max="maxPorceHeader" v-model="modelo.oHeader.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oHeader.backcolor" compo="encabezado" :destino="poneColor"/>
@@ -168,7 +189,7 @@
                                         <label for="altura-subheader">Altura del sub-encabezado</label><br>
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-subheader" name="porce-subheader" style="width:80px" min="0" :max="maxPorceSubHeader" v-model="modelo.oSubHeader.hPorce">%
+                                        <input ref="porcesubheader" type="number" id="porce-subheader" name="porce-subheader" style="width:80px" min="0" :max="maxPorceSubHeader" v-model="modelo.oSubHeader.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oSubHeader.backcolor" compo="subencabezado" :destino="poneColor"/>
@@ -180,7 +201,7 @@
                                         <label for="altura-body">Altura del cuerpo</label><br>                                                
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-body" name="porce-body" style="width:80px" min="0" :max="maxPorceBody" v-model="modelo.oBody.hPorce">%
+                                        <input ref="porcebody" type="number" id="porce-body" name="porce-body" style="width:80px" min="0" :max="maxPorceBody" v-model="modelo.oBody.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oBody.backcolor" compo="cuerpo" :destino="poneColor"/>
@@ -192,7 +213,7 @@
                                         <label for="altura-subtotales">Altura del sub-total</label><br>
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-subtotales" name="porce-subtotales" style="width:80px" min="0" :max="maxPorceSubTotales" v-model="modelo.oSubTotales.hPorce">%
+                                        <input ref="porcesubtotales" type="number" id="porce-subtotales" name="porce-subtotales" style="width:80px" min="0" :max="maxPorceSubTotales" v-model="modelo.oSubTotales.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oSubTotales.backcolor" compo="subtotales" :destino="poneColor"/>
@@ -204,7 +225,7 @@
                                         <label for="altura-pie">Altura del pie</label><br>                                                
                                     </td>
                                     <td>
-                                        <input type="number" id="porce-pie" name="porce-Pie" style="width:80px" min="0" :max="maxPorcePie" step="1.00" v-model="modelo.oPie.hPorce">%
+                                        <input ref="porcepie" type="number" id="porce-pie" name="porce-Pie" style="width:80px" min="0" :max="maxPorcePie" step="1.00" v-model="modelo.oPie.hPorce">%
                                     </td>
                                     <td>
                                         <truecolor :color="modelo.oPie.backcolor" compo="pie" :destino="poneColor"/>
@@ -241,17 +262,17 @@
 
                         <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Vista previa del encabezado" collapseId="collapseOne">
 
-                            <div class="fullpage-header" :style="`${'height:' + hHeader * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oHeader.backcolor}`">
+                            <div class="fullpage-header" :style="`${'height:' + hHeader + 'px;width:' + modelo.oMetadatos.ancho + 'px;background-color:' + modelo.oHeader.backcolor}`">
 
                                 <img v-if="logopreview && modelo.oHeader.logo.SiNo" 
                                     :src="logopreview" 
-                                    :height="`${logoHeight * 2}`" 
-                                    :width="`${logoWidth * 2}`" 
-                                    :style="`${'position:absolute;left:' + (modelo.oHeader.logo.posX * 2) + 'px;top:' + (modelo.oHeader.logo.posY * 2) + 'px'}`"
+                                    :height="`${logoHeight}`" 
+                                    :width="`${logoWidth}`" 
+                                    :style="`${'position:absolute;left:' + (modelo.oHeader.logo.posX) + 'px;top:' + (modelo.oHeader.logo.posY) + 'px'}`"
                                 />
 
                                 <label class="txt-preview" v-for="txt of modelo.oHeader.textos" :key="txt.id"
-                                    :style="`${'width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
+                                    :style="`${'width:' + ((modelo.oMetadatos.ancho) - (txt.posX) - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
                                 >
                                     <span v-if="txt.mostrar">{{txt.preview}}</span>
                                 </label>
@@ -274,7 +295,7 @@
                                             <label for="file-logo" class="btn" title="Selecciona la imagen para el logotipo">
                                                 Imagen
                                                 <i class="far fa-file-image"></i>
-                                                <input type="file" id="file-logo" accept=".png,.jpg,.bmp" @change="cargalogo" >
+                                                <input type="file" ref="fileLogo" id="file-logo" accept=".png,.jpg,.bmp" @change="cargalogo" >
                                             </label>   
                                         </td>
                                     </tr>
@@ -358,10 +379,10 @@
 
                         <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Vista previa del sub-encabezado" collapseId="collapseSOne">
 
-                            <div class="fullpage-header" :style="`${'height:' + hSubHeader * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
+                            <div class="fullpage-header" :style="`${'height:' + hSubHeader + 'px;width:' + modelo.oMetadatos.ancho + 'px;background-color:' + modelo.oSubHeader.backcolor}`">
 
-                                <label class="col-preview" v-for="txt of modelo.oSubHeader.textos" :key="txt.id"
-                                    :style="`${'width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
+                                <label class="txt-preview" v-for="txt of modelo.oSubHeader.textos" :key="txt.id"
+                                    :style="`${'width:' + ((modelo.oMetadatos.ancho) - (txt.posX) - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
                                 >
                                     <span v-if="txt.mostrar">{{txt.preview}}</span>
                                 </label>
@@ -400,17 +421,26 @@
 
                         <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Vista previa del Cuerpo" collapseId="collapseBOne">
 
-                            <div class="fullpage-header" :style="`${'height:' + hBody * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oBody.backcolor}`">
+                            <!-- BODY -->
+                            <div class="fullpage-body" :style="`${'height:' + hBody + 'px;width:' + modelo.oMetadatos.ancho + 'px;background-color:' + modelo.oBody.backcolor}`">
 
-                                <div v-for="n in 5" :key="n" style="border: solid 1px black">
+                                <table>
+                                    <tr v-for="n in 15" :key="n" class="renglon" style="height:16px">
 
-                                    <label class="col-preview" v-for="txt of modelo.oBody.textos" :key="txt.id"
-                                        :style="`${'border: 1px solid black;width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
-                                    >
-                                        <span v-if="txt.mostrar">{{n}} {{txt.preview}}</span>
-                                    </label>
+                                        <td>
 
-                                </div>
+                                            <div v-for="txt of modelo.oBody.textos" :key="txt.id" class="col-preview" :style="`${'left:' + (txt.posX) + 'px;top:' + (txt.posY) + 'px;'}`" >
+
+                                                <span v-if="txt.mostrar" :style="`${'width:auto;top:0px;left:0;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`">
+                                                    {{txt.preview}}
+                                                </span>
+
+                                            </div>
+                                            
+                                        </td>
+
+                                    </tr>
+                                </table>
 
                             </div> 
 
@@ -446,10 +476,10 @@
 
                         <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Vista previa del sub-total" collapseId="collapseSTOne">
 
-                            <div class="fullpage-header" :style="`${'height:' + hSubTotales * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oSubTotales.backcolor}`">
+                            <div class="fullpage-header" :style="`${'height:' + hSubTotales + 'px;width:' + modelo.oMetadatos.ancho + 'px;background-color:' + modelo.oSubTotales.backcolor}`">
 
                                 <label class="txt-preview" v-for="txt of modelo.oSubTotales.textos" :key="txt.id"
-                                    :style="`${'width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
+                                    :style="`${'width:' + ((modelo.oMetadatos.ancho) - (txt.posX) - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
                                 >
                                     <span v-if="txt.mostrar">{{txt.preview}}</span>
                                 </label>
@@ -488,10 +518,10 @@
 
                         <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Vista previa del Pie" collapseId="collapsePOne">
 
-                            <div class="fullpage-header" :style="`${'height:' + hPie * 2 + 'px;width:' + modelo.oMetadatos.ancho * 2 + 'px;background-color:' + modelo.oPie.backcolor}`">
+                            <div class="fullpage-header" :style="`${'height:' + hPie + 'px;width:' + modelo.oMetadatos.ancho + 'px;background-color:' + modelo.oPie.backcolor}`">
 
                                 <label class="txt-preview" v-for="txt of modelo.oPie.textos" :key="txt.id"
-                                    :style="`${'width:' + ((modelo.oMetadatos.ancho * 2) - (txt.posX * 2) - 5) + 'px;top:' + (txt.posY * 2) + 'px;left:' + (txt.posX * 2) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio * 2) + 'pt;color:' + txt.color}`" 
+                                    :style="`${'width:' + ((modelo.oMetadatos.ancho) - (txt.posX) - 5) + 'px;top:' + (txt.posY) + 'px;left:' + (txt.posX) + 'px;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + (txt.tamanio) + 'pt;color:' + txt.color}`" 
                                 >
                                     <span v-if="txt.mostrar">{{txt.preview}}</span>
                                 </label>
@@ -675,6 +705,8 @@ export default {
             campoNombre: '',
             campoTipo: 'C',
             campoAncho: 20,
+            // claveId recibida para editar
+            claveId: '',
             // Modelo del documento
             modelo: {
                 oMetadatos: {
@@ -814,6 +846,25 @@ export default {
             }
             return funciones.getModelo(tipo, ancho);
 
+        },
+        enfoca(p) {
+            switch (p) {
+                case 'E':
+                    this.$refs.porceheader.focus();
+                    break;
+                case 'SE':
+                    this.$refs.porcesubheader.focus();
+                    break;        
+                case 'B':
+                    this.$refs.porcebody.focus();
+                    break;   
+                case 'ST':
+                    this.$refs.porcesubtotales.focus();
+                    break;   
+                case 'P':
+                    this.$refs.porcepie.focus();
+                    break;                                                                           
+            }
         },
         cargalogo(e) {
             if(e.target.files[0]) {
@@ -1023,550 +1074,185 @@ export default {
                 return
             }
 
-             funciones.popAlert('question', 'Quieres guardar la definición del documento?', true, true, 8000, "Sí")
+            funciones.popAlert('question', 'Quieres guardar la definición del documento?', true, true, 8000, "Sí")
             .then((result) => {
 
                 if(result==true) {
 
                     this.hiddentelon = false;
 
-                    let tmp = this.modelo;
-                    // Almacenar nuevo documento
-                    let almacenar = "";
-                    let tt = '';
+                    if(this.claveId == null) {
+                        // Almacenar nuevo documento
+                        this.Agregar();
+                    } else {    
+                        // Actualizar el documento claveId
+                        this.Actualizar();
+                    }
+                    
+                }
+            })
+        },
+        Agregar() {
 
-                    // Cabecera del documento
-                    almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa};
-                    datos.grabarHeadDocumento(almacenar) 
-                    .then((result) => {
+            try{
 
-                        if(result.success == 1 && result.status == 201) {
+                let tmp = this.modelo;
+                let almacenar = "";
 
-                            // Almacenar propiedades del documento
+                // Cabecera del documento
+                almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa};
+                datos.grabarHeadDocumento(almacenar) 
+                .then((result) => {
 
-                            // Metadatos //////////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Id del documento", objeto: "oMetadatos", propiedad: "docuId", valor: tmp.oMetadatos.docuId};
-                            datos.grabarDocumento(almacenar);
+                    if(result.success == 1 && result.status == 201) {
 
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: tmp.oMetadatos.titulo, objeto: "oMetadatos", propiedad: "titulo", valor: tmp.oMetadatos.titulo};
-                            datos.grabarDocumento(almacenar);
+                        // Almacenar propiedades del documento
+                        almacenar = {id: tmp.oMetadatos.docuId, objeto: JSON.stringify(this.modelo, null, '\t')};
+                        datos.grabarDocumento(almacenar)
+                        .then((result) => {
 
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Versión del documento", objeto: "oMetadatos", propiedad: "version", valor: tmp.oMetadatos.version};
-                            datos.grabarDocumento(almacenar);
+                            if(result.success == 1 && result.status == 201) {
 
-                            if(tmp.oMetadatos.activa) {
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: tmp.oMetadatos.titulo, objeto: "oMetadatos", propiedad: "activa", valor: 'true'};
-                            } else {
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: tmp.oMetadatos.titulo, objeto: "oMetadatos", propiedad: "activa", valor: 'false'};
-                            }
-                            datos.grabarDocumento(almacenar);
+                                // Subir imagen del logo
+                                let imageLogo = this.$refs.fileLogo.files[0];
 
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: tmp.oMetadatos.titulo, objeto: "oMetadatos", propiedad: "orientacion", valor: tmp.oMetadatos.orientacion};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: tmp.oMetadatos.titulo, objeto: "oMetadatos", propiedad: "ancho", valor: tmp.oMetadatos.ancho};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: tmp.oMetadatos.titulo, objeto: "oMetadatos", propiedad: "alto", valor: tmp.oMetadatos.alto};
-                            datos.grabarDocumento(almacenar);
-
-                            // Encabezado /////////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Backcolor", objeto: "oHeader", propiedad: "backcolor", valor: tmp.oHeader.backcolor};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Altura", objeto: "oHeader", propiedad: "height", valor: tmp.oHeader.height};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. %Altura", objeto: "oHeader", propiedad: "hPorce", valor: tmp.oHeader.hPorce};
-                            datos.grabarDocumento(almacenar);
-
-                            // Si No del logo
-                            if(tmp.oHeader.logo.SiNo) {
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.SiNo", objeto: "oHeader", propiedad: "logo.SiNo", valor: 'true'};
-                            } else {
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.SiNo", objeto: "oHeader", propiedad: "logo.SiNo", valor: 'false'};
-                            }
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.posY", objeto: "oHeader", propiedad: "logo.posY", valor: tmp.oHeader.logo.posY};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.posX", objeto: "oHeader", propiedad: "logo.posX", valor: tmp.oHeader.logo.posX};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.height", objeto: "oHeader", propiedad: "logo.height", valor: tmp.oHeader.logo.height};
-                            datos.grabarDocumento(almacenar);
-
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.width", objeto: "oHeader", propiedad: "logo.width", valor: tmp.oHeader.logo.width};
-                            datos.grabarDocumento(almacenar);
-
-                            // Almacenar la imagen del logo
-                            let f = document.getElementById("file-logo").files[0];
-                            if(f != null) {
-
-                                // Almacenar la referencia a la imagen del logo
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.img", objeto: "oHeader", propiedad: "logo.img", valor: tmp.oHeader.logo.img};
-
-                                funciones.subirAdjunto('SYS' + tmp.oMetadatos.docuId, f)
+                                funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
                                 .then((result) => {
-                            
-                                    if(result.success != 1 || result.status != 200) {
-                                        return false;
+
+                                    if(result.success == 1 && result.status == 200) {
+
+                                        funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                                        .then(() => {
+                                            this.$router.push('/inicio');
+                                        })
+
+                                    } else {
+                                        funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
                                     }
 
-                                });                            
+                                })
+
                             } else {
-                                // Almacenar la referencia a la imagen del logo vacía
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.img", objeto: "oHeader", propiedad: "logo.img", valor: ''};
+                                funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
                             }
-                            // Almacenar la referencia a la imagen del logo
-                            datos.grabarDocumento(almacenar);
+                        })
 
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.pHeight", objeto: "oHeader", propiedad: "logo.pHeight", valor: tmp.oHeader.logo.pHeight};
-                            datos.grabarDocumento(almacenar);
+                    }
 
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Logo.pWidth", objeto: "oHeader", propiedad: "logo.pWidth", valor: tmp.oHeader.logo.pWidth};
-                            datos.grabarDocumento(almacenar);
+                })
+                this.hiddentelon = true;
 
-                            // Textos del encabezado
-                            for(let t = 0; t < tmp.oHeader.textos.length; t++) {
 
-                                tt = tmp.oHeader.textos[t];
+            } catch (error) {
+                console.log(error);
+            }
 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.id", valor: t}; 
-                                datos.grabarDocumento(almacenar);
+        },
+        Actualizar() {
 
-                                if(tt.mostrar) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.mostrar", valor: 'true'}; 
+            try {
+
+                let tmp = this.modelo;
+                let almacenar = "";
+
+                // Cabecera del documento
+                almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa};
+                datos.actualizarHeadDocumento("id='" + tmp.oMetadatos.docuId + "'", almacenar) 
+                .then((result) => {
+
+                    if(result.success == 1 && result.status == 200) {
+
+                            // Actualizar las propiedades del documento
+                            almacenar = {id: tmp.oMetadatos.docuId, objeto: JSON.stringify(this.modelo, null, '\t')};
+                            datos.actualizarDocumento("id='" + tmp.oMetadatos.docuId + "'", almacenar)
+                            .then((result) => {
+
+                                if(result.success == 1 && result.status == 200) {
+
+                                    // Subir imagen del logo
+                                    let imageLogo = this.$refs.fileLogo.files[0];
+
+                                    funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
+                                    .then((result) => {
+
+                                        if(result.success == 1 && result.status == 200) { 
+
+                                            funciones.popAlert("success", "Datos actualizados!", true, false, 3000, "ok")
+                                            .then(() => {
+                                                this.$router.push('/inicio');
+                                            });
+
+                                        } else {
+                                            funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
+                                        }
+
+                                    })
+
                                 } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.mostrar", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
+                                    funciones.popAlert("error", "No se ha podido actualizar en este momento!", true, false, 3000, "ok")
+                                }     
 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.texto", valor: tt.texto}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.fuente", valor: tt.fuente};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.tamanio", valor: tt.tamanio};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.color", valor: tt.color};
-                                datos.grabarDocumento(almacenar);
+                            });
 
-                                if(tt.estilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.estilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.estilo", valor: 'false'};
-                                } 
-                                datos.grabarDocumento(almacenar);
+                    } else {
+                        funciones.popAlert("error", "No se ha podido actualizar en este momento!", true, false, 3000, "ok")
+                    }
 
-                                if(tt.enbEstilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.enbEstilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.enbEstilo", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
+                })
 
-                                if(tt.italica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.italica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.italica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar); 
+                this.hiddentelon = true;
 
-                                if(tt.enbItalica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.enbItalica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.enbItalica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
 
-                                if(tt.subrayado) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.subrayado", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.subrayado", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
+            } catch (error) {
+                console.log(error);
+            }
 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.cssestilo", valor: tt.cssestilo}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.cssitalica", valor: tt.cssitalica};
-                                datos.grabarDocumento(almacenar); 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.csssubrayado", valor: tt.csssubrayado};
-                                datos.grabarDocumento(almacenar);                     
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.posY", valor: tt.posY};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.posX", valor: tt.posX};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Encabezado. Textos", objeto: "oHeader", propiedad: "textos.preview", valor: tt.preview};
-                                datos.grabarDocumento(almacenar);
+        },
+        LeerDatos() {
 
-                            }
+            try {
 
-                            // Sub-Encabezado /////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. backcolor", objeto: "oSubHeader", propiedad: "backcolor", valor: tmp.oSubHeader.backcolor};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. height", objeto: "oSubHeader", propiedad: "height", valor: tmp.oSubHeader.height};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. hPorce", objeto: "oSubHeader", propiedad: "hPorce", valor: tmp.oSubHeader.hPorce};
-                            datos.grabarDocumento(almacenar);
+                datos.leerLista('sys_documentos', "id='" + this.claveId + "'", ['objeto'], '')
+                .then((result) => {
 
-                            // Textos del subencabezado
-                            for(let t = 0; t < tmp.oSubHeader.textos.length; t++) {
+                    if(result.success == 1 && result.status == 200) {
 
-                                tt = tmp.oSubHeader.textos[t];
+                        this.modelo = JSON.parse(result.data[0].objeto.split('&quot;').join('"'));
 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.id", valor: t}; 
-                                datos.grabarDocumento(almacenar);
+                        funciones.rutaAdjunto("SYS" + this.modelo.oMetadatos.docuId + this.modelo.oHeader.logo.img)
+                        .then((result) => {
 
-                                if(tt.mostrar) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.mostrar", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.mostrar", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.texto", valor: tt.texto}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.fuente", valor: tt.fuente};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.tamanio", valor: tt.tamanio};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.color", valor: tt.color};
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.estilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.estilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.estilo", valor: 'false'};
-                                } 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.enbEstilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.enbEstilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.enbEstilo", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.italica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.italica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.italica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar); 
-
-                                if(tt.enbItalica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.enbItalica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.enbItalica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.subrayado) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.subrayado", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.subrayado", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.cssestilo", valor: tt.cssestilo}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.cssitalica", valor: tt.cssitalica};
-                                datos.grabarDocumento(almacenar); 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.csssubrayado", valor: tt.csssubrayado};
-                                datos.grabarDocumento(almacenar);                     
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.posY", valor: tt.posY};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.posX", valor: tt.posX};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "SubEncabezado. Textos", objeto: "oSubHeader", propiedad: "textos.preview", valor: tt.preview};
-                                datos.grabarDocumento(almacenar);
-
+                            if(result.success == 1 && result.status == 200) {
+                                this.logopreview = result.data[0];
                             }
 
-                            // Body ///////////////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. backcolor", objeto: "oBody", propiedad: "backcolor", valor: tmp.oBody.backcolor};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. height", objeto: "oBody", propiedad: "height", valor: tmp.oBody.height};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. hPorce", objeto: "oBody", propiedad: "hPorce", valor: tmp.oBody.hPorce};
-                            datos.grabarDocumento(almacenar);
+                        })
+                         
 
-                            // Textos del body
-                            for(let t = 0; t < tmp.oBody.textos.length; t++) {
-
-                                tt = tmp.oBody.textos[t];
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.id", valor: t}; 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.mostrar) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.mostrar", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.mostrar", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.texto", valor: tt.texto}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.fuente", valor: tt.fuente};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.tamanio", valor: tt.tamanio};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.color", valor: tt.color};
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.estilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.estilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.estilo", valor: 'false'};
-                                } 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.enbEstilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbEstilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbEstilo", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.italica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.italica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.italica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar); 
-
-                                if(tt.enbItalica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbItalica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.enbItalica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.subrayado) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.subrayado", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.subrayado", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.cssestilo", valor: tt.cssestilo}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.cssitalica", valor: tt.cssitalica};
-                                datos.grabarDocumento(almacenar); 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.csssubrayado", valor: tt.csssubrayado};
-                                datos.grabarDocumento(almacenar);                     
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.posY", valor: tt.posY};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.posX", valor: tt.posX};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Body. Textos", objeto: "oBody", propiedad: "textos.preview", valor: tt.preview};
-                                datos.grabarDocumento(almacenar);
-
-                            }
-
-                            // Sub-Totales ////////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. backcolor", objeto: "oSubTotales", propiedad: "backcolor", valor: tmp.oSubTotales.backcolor};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. height", objeto: "oSubTotales", propiedad: "height", valor: tmp.oSubTotales.height};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. hPorce", objeto: "oSubTotales", propiedad: "hPorce", valor: tmp.oSubTotales.hPorce};
-                            datos.grabarDocumento(almacenar);
-
-                            // Textos del Subtotales
-                            for(let t = 0; t < tmp.oSubTotales.textos.length; t++) {
-
-                                tt = tmp.oSubTotales.textos[t];
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.id", valor: t}; 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.mostrar) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.mostrar", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.mostrar", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.texto", valor: tt.texto}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.fuente", valor: tt.fuente};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.tamanio", valor: tt.tamanio};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.color", valor: tt.color};
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.estilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.estilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.estilo", valor: 'false'};
-                                } 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.enbEstilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.enbEstilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.enbEstilo", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.italica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.italica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.italica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar); 
-
-                                if(tt.enbItalica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.enbItalica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.enbItalica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.subrayado) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.subrayado", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.subrayado", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.cssestilo", valor: tt.cssestilo}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.cssitalica", valor: tt.cssitalica};
-                                datos.grabarDocumento(almacenar); 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.csssubrayado", valor: tt.csssubrayado};
-                                datos.grabarDocumento(almacenar);                     
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.posY", valor: tt.posY};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.posX", valor: tt.posX};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Subtotales. Textos", objeto: "oSubTotales", propiedad: "textos.preview", valor: tt.preview};
-                                datos.grabarDocumento(almacenar);
-
-                            }
-
-                            // Pie ////////////////////////////////////////////////
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. backcolor", objeto: "oPie", propiedad: "backcolor", valor: tmp.oPie.backcolor};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. height", objeto: "oPie", propiedad: "height", valor: tmp.oPie.height};
-                            datos.grabarDocumento(almacenar);
-                            almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. hPorce", objeto: "oPie", propiedad: "hPorce", valor: tmp.oPie.hPorce};
-                            datos.grabarDocumento(almacenar);
-
-                            // Textos del Pie
-                            for(let t = 0; t < tmp.oPie.textos.length; t++) {
-
-                                tt = tmp.oPie.textos[t];
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.id", valor: t}; 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.mostrar) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.mostrar", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.mostrar", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.texto", valor: tt.texto}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.fuente", valor: tt.fuente};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.tamanio", valor: tt.tamanio};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.color", valor: tt.color};
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.estilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.estilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.estilo", valor: 'false'};
-                                } 
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.enbEstilo) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.enbEstilo", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.enbEstilo", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.italica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.italica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.italica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar); 
-
-                                if(tt.enbItalica) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.enbItalica", valor: 'true'};
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.enbItalica", valor: 'false'};
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                if(tt.subrayado) {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.subrayado", valor: 'true'}; 
-                                } else {
-                                    almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.subrayado", valor: 'false'}; 
-                                }
-                                datos.grabarDocumento(almacenar);
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.cssestilo", valor: tt.cssestilo}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.cssitalica", valor: tt.cssitalica};
-                                datos.grabarDocumento(almacenar); 
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.csssubrayado", valor: tt.csssubrayado};
-                                datos.grabarDocumento(almacenar);                     
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.posY", valor: tt.posY};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.posX", valor: tt.posX};
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Pie. Textos", objeto: "oPie", propiedad: "textos.preview", valor: tt.preview};
-                                datos.grabarDocumento(almacenar);
-
-                            }
-
-                            // CAMPOS /////////////////////////////////////////////
-                            for(let t = 0; t < tmp.oCampos.length; t++) {
-
-                                tt = tmp.oCampos[t];
-
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. Id", objeto: "oCampos", propiedad: "id", valor: tt.id}; 
-                                datos.grabarDocumento(almacenar);
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. tabla", objeto: "oCampos", propiedad: "tabla", valor: tt.tabla}; 
-                                datos.grabarDocumento(almacenar);                                
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. nombre", objeto: "oCampos", propiedad: "nombre", valor: tt.nombre}; 
-                                datos.grabarDocumento(almacenar);                                
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. tipo", objeto: "oCampos", propiedad: "tipo", valor: tt.tipo}; 
-                                datos.grabarDocumento(almacenar);                                
-                                almacenar = { id: tmp.oMetadatos.docuId, descripcion: "Campos. ancho", objeto: "oCampos", propiedad: "ancho", valor: tt.ancho}; 
-                                datos.grabarDocumento(almacenar);
-
-                            }
+                    }
+                })
 
 
-                        }
 
-                    })
-                    funciones.popAlert("success", "Datos actualizados!", true, false, 3000, "ok");
-                    this.hiddentelon = true;
+            } catch(error) {
+                console.log(error);
 
-
-                }
-
-            })
+            }
 
 
-        }
+
+        },
+
 
 
 
     },
-
+    mounted(){
+        this.claveId = this.$route.params['p_claveId'];
+        if(this.claveId != null) {
+            this.LeerDatos();
+        }
+    },
     computed: {
         mincampoAncho:{
             get() {
@@ -1726,7 +1412,7 @@ export default {
     /* *************************** CONTENIDO DEL ENCABEZADO ************************ */
     .fullpage-header {
         display: block;
-        overflow-y: auto;        
+        overflow-y: hidden;        
         float:left;
         border: 1px solid black;
         text-align: left;
@@ -1763,24 +1449,38 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    .col-preview {
-        height:auto;
+    .fullpage-body{
+        display: block;
+        /* overflow-y: auto;         */
+        float:left;
+        border: 1px solid black;
+        text-align: left;
+        margin-bottom: 15px;
+        position: relative;  
+        /* overflow: hidden;    */
+    }    
+    .renglon {
         position: relative;
-        display: -webkit-box;
+        padding: 0px;
+        border: none;
+        overflow: hidden;
+
+    }  
+    .col-preview {
+        display: inline;
+        position: absolute;
         -webkit-line-clamp: 1;
         -webkit-box-orient: horizontal;
-        overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-
     /* Para fijar el encabezado de la tabla y desplazar los registros */
     .tableFixHead          { overflow-y: auto; height: 500px; }
     .tableFixHead thead th { position: sticky; top: 0; }
 
     /* Just common table stuff. Really. */
     table  { border-collapse: collapse; width: 100%; }
-    th, td { padding: 8px 16px; }
+    /* th, td { padding: 8px 16px;} */
     th     { background:#eee; }
 
     #texto-tmp {
@@ -1842,7 +1542,6 @@ export default {
         left: 50%;
         transform: translate(-50%, -50%);
     }
-
     .cuerpo {
         width: 100%;
         border: 2px solid black;  
