@@ -1,52 +1,35 @@
 <template>
 <div class="container-fluid">
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        
-        <div class="dropdown navbar-nav ml-auto" v-if="isLogged">
+    <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="material-icons md-48" style="color: white;">menu</span>
+    </button>
 
-            <button class="btn-link dropdown-toggle" type="button" data-toggle="dropdown">{{fname}}<span class="caret"></span></button>
+    <div class="collapse navbar-collapse float-right" id="navbarSupportedContent">
+        
+        <div class="dropdown navbar-nav ml-auto float-right" v-if="isLogged">
+
+            <span class="float-right" style="color: white;">{{fname}}</span>
+            <button class="btn-link dropdown-toggle" type="button" data-toggle="dropdown" style="border:0;background-color: transparent;">
+                <span class="material-icons md-48">account_circle</span>
+            </button>
             
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <!-- <router-link :to="`${'/userperfil/' + $store.state.userId}`" class="dropdown-item"><i class="fas fa-user" fa-5x style="color: #0000FF"/>  Datos de tu cuenta</router-link> -->
-                </li>
-                <li>
-                    <!-- <router-link :to="`${'/restcontrasenia4/' + $store.state.userEmail}`" class="dropdown-item"><i class="fas fa-key" fa-5x style="color: #0000FF"/>  Cambiar contrase&ntilde;a</router-link> -->
-                </li>
-                <div class="dropdown-divider"></div>
-                <li>
                     <router-link @click="deleteUserLogged()" to="/" class="dropdown-item"><i class="fas fa-unlink" fa-5x style="color: #0000FF"/>  Desconectar</router-link>
                 </li>
-                <div class="dropdown-divider"></div>
-                <li>
-                    <!-- <router-link to="/documentum" class="dropdown-item"><i class="fas fa-file" fa-5x style="color: #0000FF"/>  Documentación</router-link> -->
-                </li>                           
-
             </ul>
+
         </div>
         <!-- --------- -->
-        <div class="dropdown navbar-nav ml-auto" v-else> 
+        <div class="btn" v-else> 
 
-            <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown">Acceder</button>
-
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <router-link to="/login" class="dropdown-item"><i class="fas fa-user" fa-5x style="color: #000"/>  Accede</router-link>
-                </li>
-                <li>
-                    <!-- <router-link to="/registrate" class="dropdown-item"><i class="fas fa-user-plus" fa-5x style="color: #000"/>  Reg&iacute;strate</router-link> -->
-                </li>
-            </ul>
+            <router-link to="/login"><span class="inline-icon material-icons md-48">account_circle</span> Acceder</router-link>
 
         </div>
-
     
     </div>
 
-
-
-    
 </div>
 </template>
 

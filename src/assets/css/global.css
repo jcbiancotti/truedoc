@@ -10,7 +10,7 @@
 
 /* ASPECTO GENERAL DE LA APP */
 #app {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
@@ -67,13 +67,21 @@ ul li {
     width: auto;
     border-radius: 35px;
     border: 2px solid silver;
-    display: block;
-        
+    padding-top: 5px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    padding-right: 10px; 
+     
+}
+.inline-icon {
+   vertical-align: bottom;
+   font-size: 18px !important;
 }
 .btn:hover {
-    color: white;
+    color: var(--true-button-hover-letras);
     background-color: var(--true-button-hover-color);
     border-color: var(--true-border-button-color);
+    border-radius: 35px;
 }
 .btn:disabled {
     border-color: var(--true-button-border-disabled);
@@ -130,6 +138,10 @@ ul li {
     font-size: 8pt;
 }
 input[type="text"] {
+    height: auto;
+    font-size: 8pt;
+}
+input[type="password"] {
     height: auto;
     font-size: 8pt;
 }

@@ -1,7 +1,7 @@
 <template>
 <div class="container p-4">
     <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-4 mx-auto">
             <div class="card text-center align-content-center">
                 <div class="card-header">
                     <h3>Identif&iacute;cate</h3>
@@ -23,8 +23,8 @@
                             </div>
                         </div>                        
                        
-                        <div class="form-group">
-                            <a @click="login()" class="btn">Accede <i class="fas fa-sign-in-alt"></i></a>
+                        <div class="form-group btn float-center">
+                            <a @click="login()">Accede <i class="fas fa-sign-in-alt"></i></a>
                         </div>
 
                         <div class="form-group">
