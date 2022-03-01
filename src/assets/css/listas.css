@@ -1,0 +1,11 @@
+/* UL LI SELECT */
+select {
+    height: auto;
+    font-size: 8pt;
+}
+select option {
+    height: auto;
+    font-size: 8pt;
+}
+
+

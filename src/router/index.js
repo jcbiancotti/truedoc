@@ -36,11 +36,15 @@ const routes = [
         meta: { requiresAuth: true}
     },
     {
-        path: '/deldoc',
-        name: 'Deldoc',
-        component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue'),
-        meta: { requiresAuth: true}
-    }      
+        path: '/404',
+        name: '404',
+        component: () => import('@/views/sistema/page404.vue'),
+        meta: { requiresAuth: false }
+    },
+    {
+        path: "/:catchAll(.*)",
+        redirect: '/404'
+    }       
 ]
 
 const router = createRouter({
