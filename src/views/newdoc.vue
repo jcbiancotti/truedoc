@@ -32,48 +32,52 @@
                 <div class="card-body">
 
                     <form action @submit.prevent="cero">
+
                         <div class="form-group row" style="color: silver;">{{modelo.oMetadatos.docuId}}</div>
-                        <div class="form-group row">
-                            <div class="w-50 text-right pr-4">
+
+                        <div class="input-group">
+                            <div class="w-50 text-right">
                                 <label>(*) T&iacute;tulo:</label>
                             </div>
-                            <div class="w-50 text-left pl-4">
+                            <div class="w-50 text-left">
                                 <input type="text" class="form-control" v-model="modelo.oMetadatos.titulo" placeholder="Nombre para identificar el documento" :class="{conerror : hayerror == 3, sinerror : hayerror == 0}">
                             </div>
                         </div> 
 
-                        <div class="form-group row">
-                            <div class="w-50 text-right pr-4">
+                        <div class="input-group">
+                            <div class="w-50 text-right">
                                 <label>(*) Versi&oacute;n:</label>
                             </div>
-                            <div class="w-50 text-left pl-4">
+                            <div class="w-50 text-left">
                                 <input type="text" class="form-control" v-model="modelo.oMetadatos.version" placeholder="Versión del documento" :class="{conerror : hayerror == 3, sinerror : hayerror == 0}">
                             </div>
                         </div>
 
-                        <div class="form-group row align-items-center">
-                            <div class="w-50 text-right pr-4">
+                        <div class="input-group p-2">
+                            <div class="w-50 text-right">
                                 <label>Versión activada:</label>
                             </div>
-                            <div class="w-50 text-left pl-4">
+                            <div class="w-50 text-left">
                                 <label class="content-input">
-                                    <input type="checkbox" v-model="modelo.oMetadatos.activa">(Se utilizará la versión activada de mayor valor)
+                                    <input type="checkbox" v-model="modelo.oMetadatos.activa">
                                     <i></i>
-                                </label>                                   
+                                </label>    
+                                <span>(Se utilizará la versión activada de mayor valor)</span>
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <div class="w-50 text-right pr-4">
+                        <div class="input-group">
+                            <div class="w-50 text-right">
                                 <label>(*) Orientaci&oacute;n:</label>
                             </div>
-                            <div class="w-50 text-left pl-4">
-                                <select class="form-control" v-model="this.modelo.oMetadatos.orientacion" @change="changeOrientacion()">
+                            <div class="w-50">
+                                <select class="form-select" v-model="this.modelo.oMetadatos.orientacion" @change="changeOrientacion()">
                                     <option value="V">Vertical</option>
                                     <option Value="H">Horizontal</option>
                                 </select>
                                 <p style="color: silver;">Alto:{{modelo.oMetadatos.alto}}pt. x Ancho:{{modelo.oMetadatos.ancho}}pt.</p>
                             </div>
+
                         </div>
 
                     </form>
@@ -558,30 +562,28 @@
                     <!-- CAMPOS USADOS EN EL DOCUMENTO -->
                     <form action @submit.prevent="cero">
 
-                        <table id="texto-tmp" class="texto-tmp">
+                        <table>
                             <tr>
-                                <td>
+                                <!-- TABLA -->
+                                <td style="width: 20%;">
                                     <label for="campoTabla">Tabla:</label>
-                                    <input type="text" id="campoTabla" class="form-control" :class="{conerror : hayerror == 2, sinerror : hayerror == 0}" v-model="campoTabla">
+                                    <select ref="campoTabla" id="campoTabla" class="form-select" v-model="campoTabla" @change="LeerCampos(campoTabla)">
+                                        <option v-for="tabla of aTablas" :key="tabla.nombre" :value="tabla.nombre" :disabled="tabla.idx == 0">{{tabla.nombre}}</option>
+                                    </select>                                    
                                 </td>
-                                <td>
+                                <!-- CAMPO -->
+                                <td style="width: 20%;">
                                     <label for="campoNombre">Nombre del campo:</label>
-                                    <input type="text" id="campoNombre" class="form-control" :class="{conerror : hayerror == 2, sinerror : hayerror == 0}" v-model="campoNombre">
+                                    <select id="campoNombre" class="form-select" v-model="campoidx" @change="ActualizaTipoCampo()">
+                                        <option v-for="campo of aCampos" :key="campo.idx" :value="campo.idx" :disabled="campo.idx==0">{{campo.nombre}}</option>
+                                    </select>                                    
                                 </td>
-                                <td>
+                                <!-- TIPO Y FORMATO -->
+                                <td class="text-left" style="width: 45%;">
                                     <label for="campoTipo" style="padding-right: 10px;">Tipo/formato del campo:</label>
-                                    <select id="campoTipo" class="form-control" v-model="campoTipo" @change="campoAncho = 0">
-                                        <option class="form-control" value="C">Cadena de carecteres</option>
-                                        <option class="form-control" value="N">Númerico</option>
-                                        <option class="form-control" value="M">Moneda</option>
-                                        <option class="form-control" value="D">Fecha</option>
-                                        <option class="form-control" value="T">Fecha y hora</option>
-                                        <option class="form-control" value="H">Hora</option>
-                                    </select>
-
-                                    <label v-if="campoTipo=='C'" for="campoAncho">Cantidad de letras:</label>
-                                    <label v-if="campoTipo=='N'" for="campoAncho">Cantidad de decimales:</label>
-                                    <input v-if="campoTipo=='C' || campoTipo=='N'" type="number" id="campoAncho" style="width:80px" :min="mincampoAncho" :max="maxcampoAncho" v-model="campoAncho">
+                                    <span>{{cTipos[cTipos.findIndex( x => x.id == campoTipo)].literal}}</span> 
+                                    <span v-if="campoTipo == 'C' || campoTipo == 'A'">({{campoAncho}})</span>
+                                    <span v-if="campoTipo == 'N' || campoTipo == 'M'">({{campoAncho}},{{campoDecimales}})</span>
 
                                     <div style="display:block;">
                                         <label style="padding-right: 10px;">Ejemplo:</label>
@@ -593,46 +595,46 @@
 
 
                                 </td>
-                                <td>
-                                    <button class="btn float-center" @click="agregarCampo()">Guardar campo
-                                        <i class="fas fa-download"></i>
-                                    </button>
-                                    <button class="btn float-center" @click="resetCampo()">Descartar
-                                        <i class="fas fa-undo-alt"></i>
-                                    </button>                                    
+                                <td style="width: 15%;">
+                                    <span @click="agregarCampo()" class="iconos inline-icon btn-img material-icons" title="Agregar a la lista">save_alt</span>
+                                    <span @click="resetCampo()" class="iconos inline-icon btn-img material-icons" title="Descartar">clear</span>
+
                                 </td>                            
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end" style="color:red;">
+                                    {{tMensaje}}
+                                </td>
                             </tr>
                         </table>
 
                         <!-- <div class="table-responsive"> -->
-                        <div class="tableFixHead table-responsive">
-                        <table id="textos-encabezado" class="table table-hover">                            
+                        <div class="tableFixHead table-responsive"> 
+                        <table>                           
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">Tabla</th>
-                                    <th scope="col">Nombre del campo</th>
-                                    <th scope="col">Tipo</th>
-                                    <th scope="col">Acciones</th>
-                                    <th scope="col"></th>
+                                    <th>Tabla</th>
+                                    <th>Nombre del campo</th>
+                                    <th>Tipo</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody style="height: 10px !important; overflow: scroll; ">
 
                                 <tr v-for="txt of modelo.oCampos" :key="txt.id">
-                                    <td scope="row">
+                                    <td>
                                         {{txt.tabla}}
                                     </td>
-                                    <td scope="row">
+                                    <td>
                                         {{txt.nombre}}
                                     </td>
-                                    <td scope="row">
+                                    <td>
                                         {{txt.tipo}}
+                                        {{cTipos[cTipos.findIndex( x => x.id == txt.tipo)].literal}}
                                     </td>                                                                                        
-                                    <td scope="row">
-                                        <a @click="borrarCampo(txt.id)"> <i class="far fa-trash-alt fa-2x" style="color:silver" title="Eliminar este campo"></i> </a>
-                                    </td>
-                                    <td scope="row">
-                                        <a @click="editarCampo(txt.id)"> <i class="fa fa-edit fa-2x" style="color:silver" title="Editar este campo"></i> </a>
+                                    <td>
+                                        <span @click="borrarCampo(txt.id)" class="iconos inline-icon btn-img material-icons" title="Eliminar de la lista">delete</span>
+                                        <span @click="editarCampo(txt.id)" class="iconos inline-icon btn-img material-icons" title="Editar este registro">mode_edit</span>
                                     </td>                                
                                 </tr>
 
@@ -701,10 +703,25 @@ export default {
             // Introduccion de campos
             campoID: funciones.generarUUID2(),
             campoEstaba: false,
-            campoTabla: '',
-            campoNombre: '',
-            campoTipo: 'C',
-            campoAncho: 20,
+            campoidx: 0,
+            campoTabla: 'Selecciona ...',
+            campoNombre: 'Selecciona ...',
+            campoTipo: '0',
+            campoAncho: 0,
+            campoDecimales: 0,
+            aTablas: [],
+            aCampos: [],
+            cTipos: [
+                {id:"0",literal:""},
+                {id:"C",literal:"Caracteres"},
+                {id:"N",literal:"Numérico"},
+                {id:"M",literal:"Moneda"},
+                {id:"K",literal:"Si/No"},
+                {id:"D",literal:"Fecha"},
+                {id:"T",literal:"Fecha y hora"},
+                {id:"H",literal:"Hora"},
+                {id:"A",literal:"Area de texto"}], 
+            tMensaje: '',
             // claveId recibida para editar
             claveId: '',
             // Modelo del documento
@@ -835,16 +852,18 @@ export default {
 
             let tipo = 'C';
             let ancho = 0;
+            let decimales = 0;
 
             if(pCual == 'campo') {
                 tipo = this.campoTipo;
                 ancho = this.campoAncho;
+                decimales = this.campoDecimales;
             }
             if(pCual == 'columna') {
                 tipo = this.columnaTipo;
                 ancho = this.columnaAncho;
             }
-            return funciones.getModelo(tipo, ancho);
+            return funciones.getModelo(tipo, ancho, decimales);
 
         },
         enfoca(p) {
@@ -984,17 +1003,20 @@ export default {
         },
         agregarCampo() {
 
-            if((this.campoTabla == '' || this.campoNombre == '') || (this.campoTipo == 'C' && this.campoAncho == 0)) {
-                this.hayerror = 2;
+            if(this.campoTabla == '' || this.campoNombre == '' || this.campoidx == 0 || this.campoTipo == 0) {
+                this.tMensaje = "Faltan datos";
+                this.$refs.campoTabla.focus();
                 return                
             }
 
-            // Cambiar espacios por guion bajo
-            this.campoTabla = this.campoTabla.split(' ').join('_')
-            this.campoNombre = this.campoNombre.split(' ').join('_')
+            let existe = this.modelo.oCampos.findIndex(x => x.tabla === this.campoTabla && x.nombre === this.campoNombre);
+            let editando = this.modelo.oCampos.findIndex(x => x.id === this.campoID);
 
-
-            let existe = this.modelo.oCampos.findIndex(x => x.id === this.campoID);
+            if(existe != -1 && (editando == -1 || editando != existe)) {
+                this.tMensaje = "Campo repetido";
+                this.$refs.campoTabla.focus();
+                return;
+            }  
 
             if(existe == -1) {
                 // No existe, se crea
@@ -1006,7 +1028,8 @@ export default {
                     tabla: this.campoTabla, 
                     nombre: this.campoNombre,
                     tipo: this.campoTipo,
-                    ancho: this.campoAncho
+                    ancho: this.campoAncho,
+                    decimales: this.campoDecimal
                 })
 
             } else {
@@ -1016,24 +1039,28 @@ export default {
                 this.modelo.oCampos[existe].nombre = this.campoNombre;
                 this.modelo.oCampos[existe].tipo = this.campoTipo; 
                 this.modelo.oCampos[existe].ancho = this.campoAncho;
+                this.modelo.oCampos[existe].decimales = this.campoDecimales;
             }
 
             this.resetCampo();
             this.campoID = funciones.generarUUID2();
             this.hayerror = 0;
-            document.getElementById('campoTabla').focus();
 
         }, 
         resetCampo() {
             this.campoID = funciones.generarUUID2();
             this.campoEstaba = false;
-            this.campoTabla = '';
-            this.campoNombre = ''; 
-            this.campoTipo = 'C';
-            this.campoAncho = 20;
+            // this.campoTabla = '';
+            this.campoNombre = '0'; 
+            this.campoTipo = '0';
+            this.campoAncho = 0;
+            this.campoDecimales = 0;
+            this.campoidx = 0;
 
             this.hayerror = 0;
-            document.getElementById('campoTabla').focus();            
+            this.tMensaje = "";
+            this.$refs.campoTabla.focus();        
+
         },
         editarCampo(pId) {
 
@@ -1046,8 +1073,9 @@ export default {
             this.campoNombre = this.modelo.oCampos[x].nombre; 
             this.campoTipo = this.modelo.oCampos[x].tipo;
             this.campoAncho = this.modelo.oCampos[x].ancho;
+            this.campoDecimales = this.modelo.oCampos[x].decimales;
 
-            document.getElementById('campoTabla').focus();
+            this.$refs.campoTabla.focus();
 
         },
         borrarCampo(pId) {
@@ -1116,21 +1144,28 @@ export default {
                                 // Subir imagen del logo
                                 let imageLogo = this.$refs.fileLogo.files[0];
 
-                                funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
-                                .then((result) => {
+                                if(imageLogo) {
+                                    funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
+                                    .then((result) => {
 
-                                    if(result.success == 1 && result.status == 200) {
+                                        if(result.success == 1 && result.status == 200) {
 
-                                        funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
-                                        .then(() => {
-                                            this.$router.push('/inicio');
-                                        })
+                                            funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                                            .then(() => {
+                                                this.$router.push('/inicio');
+                                            })
 
-                                    } else {
-                                        funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
-                                    }
+                                        } else {
+                                            funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
+                                        }
 
-                                })
+                                    })
+                                } else {
+                                    funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                                    .then(() => {
+                                        this.$router.push('/inicio');
+                                    })
+                                }
 
                             } else {
                                 funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
@@ -1172,21 +1207,30 @@ export default {
                                     // Subir imagen del logo
                                     let imageLogo = this.$refs.fileLogo.files[0];
 
-                                    funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
-                                    .then((result) => {
+                                    if(imageLogo) {
 
-                                        if(result.success == 1 && result.status == 200) { 
+                                        funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
+                                        .then((result) => {
 
-                                            funciones.popAlert("success", "Datos actualizados!", true, false, 3000, "ok")
-                                            .then(() => {
-                                                this.$router.push('/inicio');
-                                            });
+                                            if(result.success == 1 && result.status == 200) { 
 
-                                        } else {
-                                            funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
-                                        }
+                                                funciones.popAlert("success", "Datos actualizados!", true, false, 3000, "ok")
+                                                .then(() => {
+                                                    this.$router.push('/inicio');
+                                                });
 
-                                    })
+                                            } else {
+                                                funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
+                                            }
+
+                                        })
+
+                                    } else {
+                                        funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                                        .then(() => {
+                                            this.$router.push('/inicio');
+                                        })
+                                    }                                        
 
                                 } else {
                                     funciones.popAlert("error", "No se ha podido actualizar en este momento!", true, false, 3000, "ok")
@@ -1242,8 +1286,142 @@ export default {
 
 
         },
+        LeerTablas() {
+
+            try {
+
+                let sql = "SELECT * FROM INFORMATION_SCHEMA.tables WHERE TABLE_SCHEMA='" + global.TABLE_SCHEMA + "';"; 
+                this.aTablas = [{idx:0, nombre: 'Selecciona ...'}];
+
+                funciones.ejecutaQuery(sql, [])
+                .then((result) => {
+
+                    if(result.success == 1 && result.status == 200) {
+
+                        for(let t = 0; t < result.data.length; t++){
+
+                            if(result.data[t].TABLE_NAME.substr(0,4).toLowerCase() != 'sys_') {
+                                this.aTablas.push({
+                                    idx:    this.aTablas.length,
+                                    nombre: result.data[t].TABLE_NAME.toUpperCase()
+                                })
+                            }
+                        }
+                    }
+                    console.log("Tablas:", this.aTablas);
+                })
 
 
+            } catch (error) {
+                console.log(error);
+            }
+
+
+        },
+        LeerCampos(pTabla) {
+
+            try {
+
+                let sql = "SELECT * FROM Information_Schema.Columns WHERE TABLE_NAME = '" + pTabla + "' ORDER BY COLUMN_NAME";
+                this.aCampos = [];
+
+                funciones.ejecutaQuery(sql, [])
+                .then((result) => {
+
+                    if(result.success == 1 && result.status == 200) {
+                        
+                        this.aCampos = [{
+                            idx: 0, 
+                            nombre:'Selecciona ...',                                     
+                            tipo: '',
+                            ancho: 0,
+                            decimales: 0}];
+
+                        for(let x=0; x < result.data.length; x++) {
+
+                            if(result.data[x].COLUMN_NAME.substr(0, 1) != '_') {
+
+                                let xtipo = '';
+                                let xancho = '';
+                                let xdecimales = 0;                                
+                                switch(result.data[x].DATA_TYPE.toLowerCase()) {
+
+                                    case 'varchar':
+                                        xtipo = 'C';
+                                        xancho = result.data[x].CHARACTER_MAXIMUM_LENGTH;
+                                        xdecimales = 0;
+                                        break;
+                                    case 'decimal':
+                                        xtipo = 'N';
+                                        xancho = result.data[x].NUMERIC_PRECISION;
+                                        xdecimales = result.data[x].NUMERIC_SCALE;                                        
+                                        break;
+                                    case 'int':
+                                        if(result.data[x].COLUMN_TYPE == 'int(1)') {
+                                            xtipo = 'K';
+                                            xancho = result.data[x].CHARACTER_MAXIMUM_LENGTH;
+                                            xdecimales = 0;     
+                                        } else {
+                                            xtipo = 'N';
+                                            xancho = result.data[x].NUMERIC_PRECISION;
+                                            xdecimales = 0;                                             
+                                        }
+                                        break;
+                                    case 'text':
+                                        xtipo = 'A';
+                                        xancho = result.data[x].CHARACTER_MAXIMUM_LENGTH;
+                                        xdecimales = 0;                                        
+                                        break;
+                                    case 'date':
+                                        xtipo = 'D';
+                                        xancho = 0;
+                                        xdecimales = 0;                                        
+                                        break;
+                                    case 'datetime':
+                                    case 'timestamp':
+                                        xtipo = 'T';
+                                        xancho = 0;
+                                        xdecimales = 0;                                               
+                                        break;
+                                    case 'time':
+                                        xtipo = 'H';
+                                        xancho = 0;
+                                        xdecimales = 0;                                               
+                                        break;  
+                                }
+
+                                this.aCampos.push({
+                                    idx:       this.aCampos.length,
+                                    nombre:    result.data[x].COLUMN_NAME,
+                                    tipo:      xtipo,
+                                    ancho:     xancho,
+                                    decimales: xdecimales
+                                })
+                            }
+                        }
+                        this.campoidx = 0;
+
+                        console.log("Campos", this.aCampos);
+
+                    }
+
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+
+
+        },
+        ActualizaTipoCampo() {
+            if(this.campoidx == 0) {
+                return;
+            }
+            this.campoNombre = this.aCampos[this.campoidx].nombre;
+            this.campoTipo = this.aCampos[this.campoidx].tipo;
+            this.campoAncho = this.aCampos[this.campoidx].ancho;
+            this.campoDecimales = this.aCampos[this.campoidx].decimales;
+        }       
 
 
     },
@@ -1252,6 +1430,7 @@ export default {
         if(this.claveId != null) {
             this.LeerDatos();
         }
+        this.LeerTablas();
     },
     computed: {
         mincampoAncho:{

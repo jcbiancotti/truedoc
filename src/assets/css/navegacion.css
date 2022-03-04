@@ -28,6 +28,15 @@
     padding: 10px;    
     background: var(--true-button-hover-background) !important;
 }
+
+.nav-pills .nav-link.disabled,
+.show > .nav-pills {
+    font-size: 8px;
+    margin: 2px;
+    padding: 10px;    
+    background: rgb(191, 191, 191) !important;
+}
+
 /* Resto de pestañas */
 .nav-pills .nav-link,
 .show > .nav-pills {
@@ -47,7 +56,6 @@
     color: var(--true-button-hover-color-plus);
     background: var(--true-button-color) !important;
 }
-
 
 /* Grabar */
 .nav-item:hover {

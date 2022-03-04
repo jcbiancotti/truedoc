@@ -2,6 +2,7 @@
 
 const EMPRESA = 'True Software España';
 const PRODUCCION = false;
+const TABLE_SCHEMA = 'true0001';
 let ENDPOINT_PATH;
 const DEBUG = true;
 let usuario = {
@@ -22,6 +23,7 @@ if(PRODUCCION == true) {
 export default
 {
     PRODUCCION,
+    TABLE_SCHEMA,
     ENDPOINT_PATH,
     DEBUG,
     EMPRESA,

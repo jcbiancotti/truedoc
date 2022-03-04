@@ -2,7 +2,6 @@
 <div class="container-fluid">
 
     <input type="color" :value="color" @input="devolverColor">
-    <!-- @change="devolverColor" -->
 
 </div>
 </template>
