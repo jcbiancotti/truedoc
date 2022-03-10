@@ -127,7 +127,7 @@ export default {
 
                 this.hiddentelon = false;
 
-                datos.leerLista("sys_head_documentos", "true", ["clave","id", "titulo","version","activa"], "")
+                datos.leerLista("sys_documentos", "true", ["clave","id", "titulo","version","activa"], "")
                 .then((result) => {
 
                     if(global.DEBUG)
@@ -251,57 +251,46 @@ export default {
                                 tmp.oMetadatos.version = 0;
                                 tmp.oMetadatos.activa = false;
 
+                                // Almacenar propiedades del documento
+                                let almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa, objeto: JSON.stringify(this.modelo, null, '\t')};
+                                datos.grabarDocumento(almacenar)
+                                .then(() => {
 
-                                let almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa};
-                                datos.grabarHeadDocumento(almacenar)                             
-                                .then((result) => {
+                                    // Subir imagen del logo
+                                    if(this.modelo.oHeader.logo.img) {
 
-                                    if(result.success == 1 && result.status == 201) {
+                                        let nRuta = 'SYS' + this.modelo.oMetadatos.docuId;
 
-                                        // Almacenar propiedades del documento
-                                        almacenar = {id: tmp.oMetadatos.docuId, objeto: JSON.stringify(this.modelo, null, '\t')};
-                                        datos.grabarDocumento(almacenar)
-                                        .then(() => {
+                                        funciones.readAsBlob(this.logopreview, this.modelo.oHeader.logo.img)
+                                        .then((result) =>{
+                                                
+                                            console.log("In promise", nRuta, result);
 
-                                            // Subir imagen del logo
-                                            if(this.modelo.oHeader.logo.img) {
+                                            funciones.subirAdjunto(nRuta, result)
+                                            .then((result) => {
 
-                                                let nRuta = 'SYS' + this.modelo.oMetadatos.docuId;
+                                                if(result.success == 1 && result.status == 200) {
 
-                                                funciones.readAsBlob(this.logopreview, this.modelo.oHeader.logo.img)
-                                                .then((result) =>{
-                                                        
-                                                    console.log("In promise", nRuta, result);
-
-                                                    funciones.subirAdjunto(nRuta, result)
-                                                    .then((result) => {
-
-                                                        if(result.success == 1 && result.status == 200) {
-
-                                                            funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
-                                                            .then(() => {
-                                                                this.leerDocumentos();
-                                                            })
-
-                                                        } else {
-                                                            funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
-                                                        }
-
+                                                    funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                                                    .then(() => {
+                                                        this.leerDocumentos();
                                                     })
 
-                                                });
+                                                } else {
+                                                    funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
+                                                }
+
+                                            })
+
+                                        });
 
 
-                                            } else {
+                                    } else {
 
-                                                funciones.popAlert("success", "Nuevo documento creado!", false, false, 3000, "ok")
-                                                .then(() => {
-                                                    this.leerDocumentos();
-                                                });
-
-                                            }
-
-                                        })
+                                        funciones.popAlert("success", "Nuevo documento creado!", false, false, 3000, "ok")
+                                        .then(() => {
+                                            this.leerDocumentos();
+                                        });
 
                                     }
 
@@ -323,14 +312,11 @@ export default {
 
         },
 
+    },
+    mounted() {
+        this.leerDocumentos();
 
+    }
 
-
-
-  },
-  mounted() {
-    this.leerDocumentos();
-
-  },
 }
 </script>

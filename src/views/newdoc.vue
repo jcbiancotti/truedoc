@@ -574,8 +574,8 @@
                                 <!-- CAMPO -->
                                 <td style="width: 20%;">
                                     <label for="campoNombre">Nombre del campo:</label>
-                                    <select id="campoNombre" class="form-select" v-model="campoidx" @change="ActualizaTipoCampo()">
-                                        <option v-for="campo of aCampos" :key="campo.idx" :value="campo.idx" :disabled="campo.idx==0">{{campo.nombre}}</option>
+                                    <select id="campoNombre" class="form-select" v-model="campoNombre" @change="ActualizaTipoCampo()">
+                                        <option v-for="campo of aCampos" :key="campo.idx" :value="campo.nombre" :disabled="campo.idx==0">{{campo.nombre}}</option>
                                     </select>                                    
                                 </td>
                                 <!-- TIPO Y FORMATO -->
@@ -946,7 +946,7 @@ export default {
 
                         }).finally(() => {
                             this.hiddentelon = true;              
-                        })
+                        });
 
                     }
 
@@ -1003,6 +1003,8 @@ export default {
         },
         agregarCampo() {
 
+            this.campoidx = this.aCampos.findIndex(x => x.tabla === this.campoTabla && x.nombre === this.campoNombre);
+
             if(this.campoTabla == '' || this.campoNombre == '' || this.campoidx == 0 || this.campoTipo == 0) {
                 this.tMensaje = "Faltan datos";
                 this.$refs.campoTabla.focus();
@@ -1018,12 +1020,10 @@ export default {
                 return;
             }  
 
-            if(existe == -1) {
+            if(editando == -1) {
                 // No existe, se crea
-                let idx = funciones.generarUUID2();
-
                 this.modelo.oCampos.push({
-                    id: idx, 
+                    id: this.campoID, 
                     estaba: false, 
                     tabla: this.campoTabla, 
                     nombre: this.campoNombre,
@@ -1034,12 +1034,12 @@ export default {
 
             } else {
                 // Ya existe, se actualiza
-                this.modelo.oCampos[existe].estaba = this.campoEstaba; 
-                this.modelo.oCampos[existe].tabla = this.campoTabla; 
-                this.modelo.oCampos[existe].nombre = this.campoNombre;
-                this.modelo.oCampos[existe].tipo = this.campoTipo; 
-                this.modelo.oCampos[existe].ancho = this.campoAncho;
-                this.modelo.oCampos[existe].decimales = this.campoDecimales;
+                this.modelo.oCampos[editando].estaba = this.campoEstaba; 
+                this.modelo.oCampos[editando].tabla = this.campoTabla; 
+                this.modelo.oCampos[editando].nombre = this.campoNombre;
+                this.modelo.oCampos[editando].tipo = this.campoTipo; 
+                this.modelo.oCampos[editando].ancho = this.campoAncho;
+                this.modelo.oCampos[editando].decimales = this.campoDecimales;
             }
 
             this.resetCampo();
@@ -1066,7 +1066,11 @@ export default {
 
             let x = this.modelo.oCampos.findIndex(x => x.id === pId)
 
+            this.LeerTablas();
+            this.LeerCampos(this.modelo.oCampos[x].tabla);
+
             // Cargar el texto para edición
+            this.campoidx = x;
             this.campoID = this.modelo.oCampos[x].id;
             this.campoEstaba = this.modelo.oCampos[x].estaba;
             this.campoTabla = this.modelo.oCampos[x].tabla;
@@ -1127,56 +1131,45 @@ export default {
                 let tmp = this.modelo;
                 let almacenar = "";
 
-                // Cabecera del documento
-                almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa};
-                datos.grabarHeadDocumento(almacenar) 
+                // Almacenar propiedades del documento
+                almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa, objeto: JSON.stringify(this.modelo, null, '\t')};
+                datos.grabarDocumento(almacenar)
                 .then((result) => {
 
                     if(result.success == 1 && result.status == 201) {
 
-                        // Almacenar propiedades del documento
-                        almacenar = {id: tmp.oMetadatos.docuId, objeto: JSON.stringify(this.modelo, null, '\t')};
-                        datos.grabarDocumento(almacenar)
-                        .then((result) => {
+                        // Subir imagen del logo
+                        let imageLogo = this.$refs.fileLogo.files[0];
 
-                            if(result.success == 1 && result.status == 201) {
+                        if(imageLogo) {
+                            funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
+                            .then((result) => {
 
-                                // Subir imagen del logo
-                                let imageLogo = this.$refs.fileLogo.files[0];
+                                if(result.success == 1 && result.status == 200) {
 
-                                if(imageLogo) {
-                                    funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
-                                    .then((result) => {
-
-                                        if(result.success == 1 && result.status == 200) {
-
-                                            funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
-                                            .then(() => {
-                                                this.$router.push('/inicio');
-                                            })
-
-                                        } else {
-                                            funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
-                                        }
-
-                                    })
-                                } else {
                                     funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
                                     .then(() => {
                                         this.$router.push('/inicio');
                                     })
+
+                                } else {
+                                    funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
                                 }
 
-                            } else {
-                                funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
-                            }
-                        })
+                            })
+                        } else {
+                            funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                            .then(() => {
+                                this.$router.push('/inicio');
+                            })
+                        }
 
+                    } else {
+                        funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
                     }
-
-                })
-                this.hiddentelon = true;
-
+                }).finally(() => {
+                    this.hiddentelon = true;
+                });
 
             } catch (error) {
                 console.log(error);
@@ -1190,61 +1183,48 @@ export default {
                 let tmp = this.modelo;
                 let almacenar = "";
 
-                // Cabecera del documento
-                almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa};
-                datos.actualizarHeadDocumento("id='" + tmp.oMetadatos.docuId + "'", almacenar) 
+                // Actualizar las propiedades del documento
+                almacenar = {id: tmp.oMetadatos.docuId, titulo: tmp.oMetadatos.titulo, version: tmp.oMetadatos.version, activa: tmp.oMetadatos.activa, objeto: JSON.stringify(this.modelo, null, '\t')};
+                datos.actualizarDocumento("id='" + tmp.oMetadatos.docuId + "'", almacenar)
                 .then((result) => {
 
                     if(result.success == 1 && result.status == 200) {
 
-                            // Actualizar las propiedades del documento
-                            almacenar = {id: tmp.oMetadatos.docuId, objeto: JSON.stringify(this.modelo, null, '\t')};
-                            datos.actualizarDocumento("id='" + tmp.oMetadatos.docuId + "'", almacenar)
+                        // Subir imagen del logo
+                        let imageLogo = this.$refs.fileLogo.files[0];
+
+                        if(imageLogo) {
+
+                            funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
                             .then((result) => {
 
-                                if(result.success == 1 && result.status == 200) {
+                                if(result.success == 1 && result.status == 200) { 
 
-                                    // Subir imagen del logo
-                                    let imageLogo = this.$refs.fileLogo.files[0];
-
-                                    if(imageLogo) {
-
-                                        funciones.subirAdjunto('SYS' + this.modelo.oMetadatos.docuId, imageLogo)
-                                        .then((result) => {
-
-                                            if(result.success == 1 && result.status == 200) { 
-
-                                                funciones.popAlert("success", "Datos actualizados!", true, false, 3000, "ok")
-                                                .then(() => {
-                                                    this.$router.push('/inicio');
-                                                });
-
-                                            } else {
-                                                funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
-                                            }
-
-                                        })
-
-                                    } else {
-                                        funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
-                                        .then(() => {
-                                            this.$router.push('/inicio');
-                                        })
-                                    }                                        
+                                    funciones.popAlert("success", "Datos actualizados!", true, false, 3000, "ok")
+                                    .then(() => {
+                                        this.$router.push('/inicio');
+                                    });
 
                                 } else {
-                                    funciones.popAlert("error", "No se ha podido actualizar en este momento!", true, false, 3000, "ok")
-                                }     
+                                    funciones.popAlert("error", "No se ha podido grabar en este momento! (ce001)", true, false, 3000, "ok");
+                                }
 
-                            });
+                            })
+
+                        } else {
+                            funciones.popAlert("success", "Datos almacenados!", true, false, 3000, "ok")
+                            .then(() => {
+                                this.$router.push('/inicio');
+                            })
+                        }                                        
 
                     } else {
                         funciones.popAlert("error", "No se ha podido actualizar en este momento!", true, false, 3000, "ok")
-                    }
+                    }     
 
-                })
-
-                this.hiddentelon = true;
+                }).finally(() => {
+                    this.hiddentelon = true;
+                });
 
 
             } catch (error) {
@@ -1308,7 +1288,10 @@ export default {
                             }
                         }
                     }
-                    console.log("Tablas:", this.aTablas);
+
+                    if(global.DEBUG)
+                        console.log("Tablas:", this.aTablas);
+
                 })
 
 
@@ -1332,6 +1315,7 @@ export default {
                         
                         this.aCampos = [{
                             idx: 0, 
+                            tabla: '',
                             nombre:'Selecciona ...',                                     
                             tipo: '',
                             ancho: 0,
@@ -1392,6 +1376,7 @@ export default {
 
                                 this.aCampos.push({
                                     idx:       this.aCampos.length,
+                                    tabla:     pTabla,
                                     nombre:    result.data[x].COLUMN_NAME,
                                     tipo:      xtipo,
                                     ancho:     xancho,
@@ -1399,9 +1384,9 @@ export default {
                                 })
                             }
                         }
-                        this.campoidx = 0;
 
-                        console.log("Campos", this.aCampos);
+                        if(global.DEBUG)
+                            console.log("Campos", this.aCampos);
 
                     }
 
@@ -1414,13 +1399,18 @@ export default {
 
         },
         ActualizaTipoCampo() {
-            if(this.campoidx == 0) {
+
+            this.campoidx = this.aCampos.findIndex(x => x.tabla === this.campoTabla && x.nombre === this.campoNombre);
+
+            if(this.campoidx < 0) {
                 return;
             }
+
             this.campoNombre = this.aCampos[this.campoidx].nombre;
             this.campoTipo = this.aCampos[this.campoidx].tipo;
             this.campoAncho = this.aCampos[this.campoidx].ancho;
             this.campoDecimales = this.aCampos[this.campoidx].decimales;
+
         }       
 
 
@@ -1630,13 +1620,11 @@ export default {
     }
     .fullpage-body{
         display: block;
-        /* overflow-y: auto;         */
         float:left;
         border: 1px solid black;
         text-align: left;
         margin-bottom: 15px;
         position: relative;  
-        /* overflow: hidden;    */
     }    
     .renglon {
         position: relative;
