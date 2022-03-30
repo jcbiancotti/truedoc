@@ -9,9 +9,8 @@
                 <div class="card-body">
 
                     <form action @submit.prevent="cero">
-
-                        <div class="form-group">
-                            <label for="correo">Correo electr&oacute;nico</label>
+                        <label for="correo">Correo electr&oacute;nico</label>
+                        <div class="form-group input-group addon">
                             <input type="email" class="form-control" name="correo" id="correo" placeholder="Tu correo electrónico..." v-model="modelo.usuario">
                         </div>
 
@@ -23,8 +22,8 @@
                             </div>
                         </div>                        
                        
-                        <div class="form-group btn float-center">
-                            <a @click="login()">Accede <i class="fas fa-sign-in-alt"></i></a>
+                        <div @click="login()" class="form-group btn float-center">Accede 
+                            <i class="fas fa-sign-in-alt"></i>
                         </div>
 
                         <div class="form-group">
@@ -32,15 +31,8 @@
                         </div>
                     
                     </form>
+
                 </div>
-                <!-- <div class="card-footer">
-                    <router-link to="/registrate" class="nav-link">
-                        <p>A&uacute;n no tienes cuenta? Reg&iacute;strate aqu&iacute;</p>
-                    </router-link>
-                    <router-link to="/restcontrasenia" class="nav-link">
-                        <p>Olvidaste la contraseña? Crea una nueva. Haz click aqu&iacute;</p>
-                    </router-link>
-                </div> -->
                 
             </div>
         </div>

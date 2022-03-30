@@ -1,8 +1,8 @@
 <template>
 <div class="container-fluid">
 
-    <select id="fuentes" :value="valor" class="form-select" @click="setData">
-        <option v-for="opc of aFuentes" :key="opc.valor" :value="opc.texto">{{opc.texto}}</option>
+    <select id="fuentes" :value="valor" class="form-control" @click="setData">
+        <option v-for="opc of aFuentes" :key="opc.valor" class="form-control" :value="opc.texto">{{opc.texto}}</option>
     </select>
 
 </div>

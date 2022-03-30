@@ -6,15 +6,16 @@
     <h1 v-if="claveId != null">Editando documento: {{claveId}}</h1>
     <!-- TABS -->
     <ul class="nav nav-pills" role="tablist">
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-toggle="tab" href="#datos-docu">Metadatos</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 2}" @click="tab=2" data-toggle="tab" href="#datos-formato">Secciones</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 3}" @click="tab=3" data-toggle="tab" href="#datos-encabezado">Contenido del encabezado</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 4}" @click="tab=4" data-toggle="tab" href="#datos-subencabezado">Contenido del sub-encabezado</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 5}" @click="tab=5" data-toggle="tab" href="#datos-cuerpo">Contenido del cuerpo</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 6}" @click="tab=6" data-toggle="tab" href="#datos-subtotales">Contenido del subt-total</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 7}" @click="tab=7" data-toggle="tab" href="#datos-pie">Contenido del pie</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 8}" @click="tab=8" data-toggle="tab" href="#datos-campos">Campos utilizados</a></li>
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 9}" @click="Grabar()">Grabar</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-bs-toggle="tab" href="#datos-docu">Metadatos</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 2}" @click="tab=2" data-bs-toggle="tab" href="#datos-formato">Secciones</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 3}" @click="tab=3" data-bs-toggle="tab" href="#datos-encabezado">Contenido del encabezado</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 4}" @click="tab=4" data-bs-toggle="tab" href="#datos-subencabezado">Contenido del sub-encabezado</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 5}" @click="tab=5" data-bs-toggle="tab" href="#datos-cuerpo">Contenido del cuerpo</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 6}" @click="tab=6" data-bs-toggle="tab" href="#datos-subtotales">Contenido del subt-total</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 7}" @click="tab=7" data-bs-toggle="tab" href="#datos-pie">Contenido del pie</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 8}" @click="tab=8" data-bs-toggle="tab" href="#datos-campos">Campos utilizados</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 9}" @click="tab=9" data-bs-toggle="tab" href="#datos-JSON">JSON</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 10}" @click="Grabar()">Grabar</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -36,28 +37,28 @@
                         <div class="form-group row" style="color: silver;">{{modelo.oMetadatos.docuId}}</div>
 
                         <div class="input-group">
-                            <div class="w-50 text-right">
+                            <div class="w-50 text-end">
                                 <label>(*) T&iacute;tulo:</label>
                             </div>
-                            <div class="w-50 text-left">
+                            <div class="w-50 text-start">
                                 <input type="text" class="form-control" v-model="modelo.oMetadatos.titulo" placeholder="Nombre para identificar el documento" :class="{conerror : hayerror == 3, sinerror : hayerror == 0}">
                             </div>
                         </div> 
 
                         <div class="input-group">
-                            <div class="w-50 text-right">
+                            <div class="w-50 text-end">
                                 <label>(*) Versi&oacute;n:</label>
                             </div>
-                            <div class="w-50 text-left">
+                            <div class="w-50 text-start">
                                 <input type="text" class="form-control" v-model="modelo.oMetadatos.version" placeholder="Versión del documento" :class="{conerror : hayerror == 3, sinerror : hayerror == 0}">
                             </div>
                         </div>
 
                         <div class="input-group p-2">
-                            <div class="w-50 text-right">
+                            <div class="w-50 text-end">
                                 <label>Versión activada:</label>
                             </div>
-                            <div class="w-50 text-left">
+                            <div class="w-50 text-start">
                                 <label class="content-input">
                                     <input type="checkbox" v-model="modelo.oMetadatos.activa">
                                     <i></i>
@@ -67,7 +68,7 @@
                         </div>
 
                         <div class="input-group">
-                            <div class="w-50 text-right">
+                            <div class="w-50 text-end">
                                 <label>(*) Orientaci&oacute;n:</label>
                             </div>
                             <div class="w-50">
@@ -100,7 +101,7 @@
                 </div>
                 <div class="card-body">
 
-                    <table class="text-left">
+                    <table class="text-start">
                         <tr>
                             <td>
                                 <div class="fullpage" :style="`${'width:' + modelo.oMetadatos.ancho / 2 + 'px;height:' + modelo.oMetadatos.alto / 2 + 'px'}`">
@@ -579,7 +580,7 @@
                                     </select>                                    
                                 </td>
                                 <!-- TIPO Y FORMATO -->
-                                <td class="text-left" style="width: 45%;">
+                                <td class="text-start" style="width: 45%;">
                                     <label for="campoTipo" style="padding-right: 10px;">Tipo/formato del campo:</label>
                                     <span>{{cTipos[cTipos.findIndex( x => x.id == campoTipo)].literal}}</span> 
                                     <span v-if="campoTipo == 'C' || campoTipo == 'A'">({{campoAncho}})</span>
@@ -652,6 +653,28 @@
 
         </div>
 
+        <!-- JSON -->
+        <div id="datos-JSON" class="container-fluid tab-pane fade " :class="{show : tab == 9, active : tab == 9}"><br>
+
+            <div class="row justify-content-center">
+            <div class="card" style="width: 90%;">
+
+                <div class="card-header">
+                    <h3>JSON</h3>
+                </div>
+                <div class="card-body">
+
+                    <form action @submit.prevent="cero">
+                        <truetree :treemodelo="modelo"/>
+                    </form>
+
+                </div>
+
+            </div>
+            </div>
+
+        </div>  
+
     </div>
 
 
@@ -666,6 +689,7 @@ import funciones from '@/utils/funciones'
 import datos from '@/utils/datos'
 import truecolor from '@/components/visuales/trueColor'
 import telon from '@/components/visuales/telon'
+import truetree from '@/components/visuales/truetree'
 import textos from '@/components/visuales/textos'
 
 import {
@@ -682,9 +706,8 @@ export default {
         MDBAccordion,
         MDBAccordionItem,
         textos,
+        truetree,
 
-    },
-    directives:{
     },
     data() {
 

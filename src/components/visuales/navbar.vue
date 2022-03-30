@@ -1,11 +1,12 @@
 <template>
 <div class="container-fluid">
+
     <nav class="navbar navbar-expand-md p-0">
 
-        <div class="col text-left navbar-true">
+        <div class="col text-start navbar-true">
 
-            <router-link v-if="isLogged" to="/inicio" class="btn float-left">Home <i class="fa fa-home"></i></router-link>
-            <router-link v-if="isLogged" to="/newdoc" class="btn float-left">Nuevo documento <i class="far fa-file"></i></router-link>
+            <router-link v-if="isLogged" to="/inicio" class="btn float-start text-nowrap">Home <span class="iconos inline-icon material-icons">home</span></router-link>
+            <router-link v-if="isLogged" to="/newdoc" class="btn float-start text-nowrap">Nuevo documento <span class="iconos inline-icon material-icons">desktop_windows</span></router-link>
 
             <userButton />
 
@@ -53,6 +54,4 @@ export default {
 }
 </script>
 
-<style>
 
-</style>

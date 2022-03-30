@@ -55,7 +55,7 @@ debemos definir este valor.
 	box-shadow: 3px 0 -3px 0 rgba(0,0,0,0.2);
 }
 .content-input input[type=checkbox]:checked + i{
- 	background: var(--true-button-hover-background);
+ background: var(--true-button-hover-background);
 }
 .content-input input[type=checkbox] + i:after{
 	content: 'ON';

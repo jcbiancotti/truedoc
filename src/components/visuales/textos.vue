@@ -1,119 +1,105 @@
 <template>
-<div class="container-fluid">
+<div>
 
     <form action @submit.prevent="cero">
 
-        <table>
+        <table id="texto-tmp" class="texto-tmp">
             <tr>
-
-                <td class="align-top text-left" style="width:25%;">
-                    <span>Fuente:</span>
-                    <truefuentes id="txtFuente" :valor="txtFuente" @getData="getData"/>
-                </td> 
-
-                <td class=" align-top align-text-top text-left" style="width:15%;">
+                <td>
+                    <span>Fuente:<truefuentes id="txtFuente" :valor="txtFuente" @getData="getData"/></span>
+                </td>                                  
+                <td>
                     <label class="content-input">
                         <input type="checkbox" v-model="txtEstilo" :disabled="!enbEstilo">Negrita
                         <i></i>
-                        <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger" style="z-index:9999" v-if="!enbEstilo">No</span>
-                    </label>  
+                        <MDBBadge notification v-if="!enbEstilo" color="danger" pill>NO</MDBBadge>
+                    </label><br>  
                 </td>
-                <td class="align-top text-left" style="width:15%;">
+                <td>
                     <label class="content-input">
                         <input type="checkbox" v-model="txtItalica" :disabled="!enbItalica">It&aacute;lica
                         <i></i>
-                        <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger" style="z-index:9999" v-if="!enbItalica">No</span>
+                        <MDBBadge notification v-if="!enbItalica" color="danger" pill>NO</MDBBadge>
                     </label>
                 </td>
-                <td class="align-top text-left" style="width:15%;">
-                    <label class="content-input" style="display:block">Subrayado
-                        <input type="checkbox" v-model="txtSubrayado">
+                <td>
+                    <label class="content-input">
+                        <input type="checkbox" v-model="txtSubrayado">Subrayado
                         <i></i>
                     </label>       
                 </td>
-                <td class="align-top" style="width:15%;">
-                    <span>Color del texto:</span>
-                    <truecolor :color="txtColor" compo="txtColorEncabezado" :destino="poneColor"/>
+                <td>
+                    <span>Color del texto:<truecolor :color="txtColor" compo="txtColorEncabezado" :destino="poneColor"/></span>
                 </td>
-                <td class="align-top" style="width:15%;">
-                    <span>Tama&ntilde;o (pts.):</span>
-                    <input ref="tamanio" id="tamanio" type="number" class="form-control" style="width:100%;" min="1" :max="`${modelo.oHeader.height}`" v-model="txtTamanio">
+                <td>
+                    <label for="tamanio">Tama&ntilde;o</label>
+                    <input type="number" id="tamanio" min="1" :max="`${modelo.oHeader.height}`" v-model="txtTamanio">pt.
                 </td>                                
             </tr>
             <tr>
-                <td colspan="3" class="align-top text-left">
-                    <span>Literal del texto:</span>
-                    <div style="height: auto;overflow: hidden;">
-                        <input type="text" id="txtTexto" v-model="txtTexto" 
-                            :style="`${
-                                'height:100%' +
-                                ';width:100%' +
-                                ';font-family:' + txtFuente + 
-                                ';font-weight:' + cssEstilo + 
-                                ';font-style:' + cssItalica + 
-                                ';text-decoration:' + cssSubrayado + 
-                                ';font-size:' + txtTamanio + 'pt;color:' + txtColor + 
-                                ';background-color:' + txtBkColor}`" 
-                            placeholder="Escribe aquí el texto que deseas incluir" 
-                        >
-                    </div>                    
-                </td>
-                <td>
-                    <div class="input-group">
-                        <div style="width:100%;">
-                            <span>Posici&oacute;n Y</span>
-                            <input type="number" id="txtPos-y"  class="form-control" style="width:100%;" min="0" :max="`${modelo.oHeader.height - txtTamanio}`" v-model="txtPosY">
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group">
-                        <div style="width:100%;">
-                            <span>Posici&oacute;n X</span>
-                            <input type="number" id="txtPos-x"  class="form-control" style="width:100%;" min="0" :max="`${modelo.oMetadatos.ancho - 10}`" v-model="txtPosX">
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <span @click="agregarTexto(modelo)" class="iconos inline-icon btn-img material-icons" title="Agregar a la lista">save_alt</span>
-                    <span @click="resetTexto()" class="iconos inline-icon btn-img material-icons" title="Descartar">clear</span>
-                </td>                            
-            </tr>
-            <tr>
-                <td colspan="6">
+                <td colspan="3">
+                    <input type="text" class="form-control" id="txtTexto"
+                        :class="{conerror : hayerror == 1, sinerror : hayerror == 0}"
+                        v-model="txtTexto"
+                        :style="`${'height:auto;font-family:' + txtFuente + ';font-weight:' + cssEstilo + ';font-style: ' + cssItalica + ';text-decoration:' + cssSubrayado + ';font-size:' + txtTamanio + 'pt;color:' + txtColor + ';background-color:' + txtBkColor}`" 
+                        placeholder="Escribe aquí el texto que deseas incluir"
+                    >
                     <p style="font-size: 8pt;">Para indicar que es un campo de una tabla debes encerrarlo entre corchetes. Por ejemplo: Fecha [facturas.fecha_factura]</p>
                 </td>
+                <td>
+                    <label for="txtPos-y">Posici&oacute;n Y</label>
+                    <input type="number" id="txtPos-y" min="0" :max="`${modelo.oHeader.height - txtTamanio}`" v-model="txtPosY">
+                </td>
+                <td>
+                    <label for="txtPos-x">Posici&oacute;n X</label>
+                    <input type="number" id="txtPos-x" min="0" :max="`${modelo.oMetadatos.ancho - 10}`" v-model="txtPosX">
+                </td>
+                <td>
+                    <button class="btn float-center" @click="agregarTexto(modelo)">Guardar texto
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn float-center" @click="resetTexto()">Descartar
+                        <i class="fas fa-undo-alt"></i>
+                    </button>                                    
+                </td>                            
             </tr>
         </table>
 
         <!-- <div class="table-responsive"> -->
         <div class="tableFixHead table-responsive">
-        <table >                           
-            <thead>
+        <table id="textos-encabezado" class="table table-hover">                            
+            <thead class="thead-light">
                 <tr>
                     <th scope="col">Visible</th>
                     <th scope="col">Texto</th>
                     <th scope="col">Acciones</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
+            <tbody style="height: 10px !important; overflow: scroll; ">
 
-            <tr v-for="txt of modelo[objeto].textos" :key="txt.id">
-                <td>
-                    <label class="content-input">
-                        <input type="checkbox" v-model="txt.mostrar">
-                        <i></i>
-                    </label>                                                                              
-                </td>
-                <td>
-                    <p :style="`${'max-width:100%;height:auto;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + txt.tamanio + 'pt;color:' + txt.color + ';background-color:' + txtBkColor}`">
-                        {{txt.texto}}
-                    </p>
-                </td>
-                <td>
-                    <span @click="borrarTexto(txt.id)" class="iconos inline-icon btn-img material-icons" title="Eliminar de la lista">delete</span>
-                    <span @click="editarTexto(txt.id)" class="iconos inline-icon btn-img material-icons" title="Editar este registro">mode_edit</span>
-                </td>
-            </tr>
+                <tr v-for="txt of modelo[objeto].textos" :key="txt.id">
+                    <td scope="row">
+                        <label class="content-input">
+                            <input type="checkbox" v-model="txt.mostrar">
+                            <i></i>
+                        </label>                                                                              
+                    </td>
+                    <td scope="row">
+                        <p
+                            :style="`${'max-width:100%;height:auto;font-family:' + txt.fuente + ';font-weight:' + txt.cssestilo + ';font-style: ' + txt.cssitalica + ';text-decoration:' + txt.csssubrayado + ';font-size:' + txt.tamanio + 'pt;color:' + txt.color + ';background-color:' + txtBkColor}`" 
+                        >
+                        {{txt.texto}}</p>
+                    </td>
+                    <td scope="row">
+                        <a @click="borrarTexto(txt.id)"> <i class="far fa-trash-alt fa-2x" style="color:silver" title="Eliminar este texto"></i> </a>
+                    </td>
+                    <td scope="row">
+                        <a @click="editarTexto(txt.id)"> <i class="fa fa-edit fa-2x" style="color:silver" title="Editar este texto"></i> </a>
+                    </td>                                
+                </tr>
+
+            </tbody>
 
         </table>
         </div>
@@ -128,6 +114,9 @@ import global from '@/utils/global'
 import funciones from '@/utils/funciones'
 import truecolor from '@/components/visuales/trueColor'
 import truefuentes from '@/components/visuales/truefuentes'
+import {
+    MDBBadge,
+} from 'mdb-vue-ui-kit';
 
 export default {
     name: 'Textos',
@@ -154,6 +143,7 @@ export default {
     components:{
         truecolor,
         truefuentes,
+        MDBBadge,
     },
     props:{
         objeto: String,
@@ -321,34 +311,21 @@ export default {
         },
         resetTexto() {
 
-            let tmpFte = funciones.datosFuente(this.txtFuente, false);
-
-            this.enbEstilo = tmpFte.b;
-            this.enbItalica = tmpFte.i;
-
-            if(this.enbEstilo == false) {
-                this.txtEstilo = false;
-            }
-            if(this.enbEstilo == false) {
-                this.txtItalica = false;
-            }
-
             this.txtID = funciones.generarUUID2();
             this.txtEstaba = false;
             this.txtMostrar = true;
             this.txtTexto = ''; 
             this.txtPosY = 10;
             this.txtPosX = 10;
-            // this.txtEstilo = false;
-            // this.enbEstilo = true;
-            // this.txtItalica = false;
-            // this.enbItalica = true;
+            this.txtEstilo = false;
+            this.enbEstilo = true;
+            this.txtItalica = false;
+            this.enbItalica = true;
             this.txtSubrayado = false;
             this.txtTamanio = 12;
             this.txtPreview = '';
 
             this.hayerror = 0;
-
             document.getElementById('txtTexto').focus();
 
         },
@@ -395,7 +372,32 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+    /* Para fijar el encabezado de la tabla y desplazar los registros */
+    .tableFixHead          { overflow-y: auto; height: 500px; }
+    .tableFixHead thead th { position: sticky; top: 0; }
+
+    /* Just common table stuff. Really. */
+    table  { border-collapse: collapse; width: 100%; }
+    th, td { padding: 8px 16px; }
+    th     { background:#eee; }
+
+    #texto-tmp {
+        border: 1px solid black;
+        background-color: rgb(210,210,210);
+        width: 100%;
+    }
+    #texto-tmp td {
+        vertical-align: middle;
+        padding: 5px;
+        /* border: 1px solid black; */
+        align-items: center;
+    }
+    .texto-tmp input[type="number"] {
+        width: 80px;
+        margin-left: 5px;
+    }
+ 
 
 </style>
-
