@@ -6,7 +6,7 @@
     <h1 v-if="claveId != null">Editando documento: {{claveId}}</h1>
     <!-- TABS -->
     <ul class="nav nav-pills" role="tablist">
-        <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-bs-toggle="tab" href="#datos-docu">Metadatos</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-bs-toggle="tab" href="#datos-docu">Datos generales</a></li>
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 2}" @click="tab=2" data-bs-toggle="tab" href="#datos-formato">Secciones</a></li>
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 3}" @click="tab=3" data-bs-toggle="tab" href="#datos-encabezado">Contenido del encabezado</a></li>
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 4}" @click="tab=4" data-bs-toggle="tab" href="#datos-subencabezado">Contenido del sub-encabezado</a></li>
@@ -28,7 +28,7 @@
             <div class="card" style="width: 90%;">
 
                 <div class="card-header">
-                    <h3>Metadatos</h3>
+                    <h3>Datos generales</h3>
                 </div>
                 <div class="card-body">
 
@@ -556,7 +556,7 @@
             <div class="card" style="width: 90%;">
                 
                 <div class="card-header">
-                    <h3>Campos utilizados en el documento</h3>
+                    <h3>Campos complementarios al listado usados en esta plantilla</h3>
                 </div>
                 <div class="card-body">
 
