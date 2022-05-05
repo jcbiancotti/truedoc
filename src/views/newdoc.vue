@@ -3,7 +3,7 @@
 
     <telon :hidden="hiddentelon"/>
 
-    <h1 v-if="claveId != null">Editando documento: {{claveId}}</h1>
+    <h1 v-if="claveId != null">Editando documento: {{modelo.oMetadatos.titulo}} ({{claveId}})</h1>
     <!-- TABS -->
     <ul class="nav nav-pills" role="tablist">
         <li class="nav-item"><a class="nav-link" :class="{active : tab == 1}" @click="tab=1" data-bs-toggle="tab" href="#datos-docu">Datos generales</a></li>
@@ -450,7 +450,7 @@
                             </div> 
 
                         </MDBAccordionItem>
-                        <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Columnas" collapseId="collapseBTwo">
+                        <MDBAccordionItem class="accordion-collapse collapse show" headerTitle="Textos libres (No columnas)" collapseId="collapseBTwo">
                             
                             <textos objeto="oBody" :modelo="modelo" @getData="getData"/> 
 
